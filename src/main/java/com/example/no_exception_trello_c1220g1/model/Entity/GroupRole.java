@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 public class GroupRole {
 
     private int id;
-    private AppUser user;
+    private User user;
     private Group group;
-    private Roles role;
+    private Role role;
 }

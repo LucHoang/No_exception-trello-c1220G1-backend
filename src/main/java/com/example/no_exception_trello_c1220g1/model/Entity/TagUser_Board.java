@@ -16,7 +16,7 @@ public class TagUser_Board {
     @ManyToOne
     private Board board;
     @ManyToOne
-    private AppUser appUser;
+    private User appUser;
 
 }
 

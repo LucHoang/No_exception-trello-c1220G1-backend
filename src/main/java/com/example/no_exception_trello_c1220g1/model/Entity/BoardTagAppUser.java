@@ -1,7 +1,5 @@
 package com.example.no_exception_trello_c1220g1.model.Entity;
 
-import com.example.no_exception_trello_c1220g1.model.Entity.AppUser;
-import com.example.no_exception_trello_c1220g1.model.Entity.Board;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,7 +14,7 @@ public class BoardTagAppUser {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
     @ManyToOne
-    private AppUser appUser;
+    private User appUser;
     @ManyToOne
     private Board board;
 

@@ -6,7 +6,7 @@ import java.util.Set;
 
 @Entity
 @Data
-public class AppUser {
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -15,7 +15,7 @@ public class AppUser {
     private String avatar;
     private String email;
     @ManyToMany(fetch = FetchType.EAGER)
-    private Set<Roles> appRole;
+    private Set<Role> appRole;
     private String phone;
 
 }

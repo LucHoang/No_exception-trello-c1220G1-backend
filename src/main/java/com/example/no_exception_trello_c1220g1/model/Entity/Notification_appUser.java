@@ -1,8 +1,5 @@
 package com.example.no_exception_trello_c1220g1.model.Entity;
 
-import com.example.no_exception_trello_c1220g1.model.Entity.AppUser;
-import com.example.no_exception_trello_c1220g1.model.Entity.Notification;
-
 import javax.persistence.*;
 
 @Entity
@@ -11,7 +8,7 @@ public class Notification_appUser {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
-    private AppUser appUser;
+    private User appUser;
     @ManyToOne
     private Notification notification;
 }

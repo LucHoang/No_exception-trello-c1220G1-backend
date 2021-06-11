@@ -1,6 +1,5 @@
 package com.example.no_exception_trello_c1220g1.model.Entity;
 
-import com.example.no_exception_trello_c1220g1.model.Entity.AppUser;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,6 +17,6 @@ public class Notification {
     private Long id;
     private String content;
     @ManyToMany
-    private Set<AppUser> appUser;
+    private Set<User> appUser;
 
 }
