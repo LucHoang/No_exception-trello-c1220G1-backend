@@ -1,8 +1,6 @@
-package com.example.trello_project_alcohol.config.securityConfig;
+package com.example.no_exception_trello_c1220g1.configuration;
 
-import com.example.trello_project_alcohol.config.JwtConfig.JwtAuthenticationFilter;
-import com.example.trello_project_alcohol.config.accessDeniedHandle.CustomAccessDeniedHandler;
-import com.example.trello_project_alcohol.service.userService.IAppUserService;
+import com.example.no_exception_trello_c1220g1.service.userService.IAppUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

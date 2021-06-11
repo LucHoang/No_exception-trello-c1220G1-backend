@@ -1,7 +1,7 @@
-package com.example.trello_project_alcohol.config.JwtConfig;
+package com.example.no_exception_trello_c1220g1.configuration;
 
-import com.example.trello_project_alcohol.service.jwtService.JwtService;
-import com.example.trello_project_alcohol.service.userService.IAppUserService;
+import com.example.no_exception_trello_c1220g1.service.jwtService.JwtService;
+import com.example.no_exception_trello_c1220g1.service.userService.IAppUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;

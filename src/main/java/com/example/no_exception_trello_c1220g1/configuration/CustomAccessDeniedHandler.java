@@ -1,4 +1,4 @@
-package com.example.trello_project_alcohol.config.accessDeniedHandle;
+package com.example.no_exception_trello_c1220g1.configuration;
 
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;

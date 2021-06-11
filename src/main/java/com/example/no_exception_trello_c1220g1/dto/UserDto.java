@@ -10,14 +10,15 @@ import javax.validation.constraints.Size;
 @Builder
 @Data
 public class UserDto {
-    @Size(min = 3, max = 30)
+    @NotBlank
     private String userName;
     private MultipartFile avatarMul;
     @Email
     @NotBlank
     private String email;
-    private String oldPassWord;
-    private String newPassWord;
+    @Size(min = 6, max = 32)
+    private String passWord;
+//    private String newPassWord;
     private String phone;
 
 }

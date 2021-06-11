@@ -1,9 +1,8 @@
-package com.example.demojwt.controller;
+package com.example.no_exception_trello_c1220g1.controller;
 
-import com.example.demojwt.model.JwtResponse;
-import com.example.demojwt.model.User;
-import com.example.demojwt.service.JwtService;
-import com.example.demojwt.service.user.IUserService;
+import com.example.no_exception_trello_c1220g1.model.AppUser;
+import com.example.no_exception_trello_c1220g1.service.jwtService.JwtService;
+import com.example.no_exception_trello_c1220g1.service.userService.IAppUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,26 +27,26 @@ public class AuthController {
     private JwtService jwtService;
 
     @Autowired
-    private IUserService userService;
+    private IAppUserService userService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody User user) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        String jwt = jwtService.generateTokenLogin(authentication);
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        User currentUser = userService.findByUsername(user.getUsername());
-        return ResponseEntity.ok(new JwtResponse(currentUser.getId(), userDetails.getUsername(), jwt, userDetails.getAuthorities()));
-    }
+//    @PostMapping("/login")
+//    public ResponseEntity<?> login(@RequestBody User user) {
+//        Authentication authentication = authenticationManager.authenticate(
+//                new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
+//
+//        SecurityContextHolder.getContext().setAuthentication(authentication);
+//
+//        String jwt = jwtService.generateTokenLogin(authentication);
+//        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+//        User currentUser = userService.findByUsername(user.getUsername());
+//        return ResponseEntity.ok(new JwtResponse(currentUser.getId(), userDetails.getUsername(), jwt, userDetails.getAuthorities()));
+//    }
 
     @PostMapping("/register")
-    public ResponseEntity<User> register(@RequestBody User user) {
+    public ResponseEntity<AppUser> register(@RequestBody AppUser user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return new ResponseEntity<>(userService.save(user), HttpStatus.CREATED);
     }

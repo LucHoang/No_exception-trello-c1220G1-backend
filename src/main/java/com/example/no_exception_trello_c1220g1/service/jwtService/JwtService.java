@@ -1,6 +1,6 @@
-package com.example.trello_project_alcohol.service.jwtService;
+package com.example.no_exception_trello_c1220g1.service.jwtService;
 
-import com.example.trello_project_alcohol.model.UserPrinciple;
+import com.example.no_exception_trello_c1220g1.dto.UserPrinciple;
 import io.jsonwebtoken.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +13,7 @@ import java.util.Date;
 @Component
 @Service
 public class JwtService {
-    private static final String SECRET_KEY = "vantoancoder";
+    private static final String SECRET_KEY = "123456789";
     private static final long EXPIRE_TIME = 86400000000L;
     private static final Logger logger = LoggerFactory.getLogger(JwtService.class.getName());
 

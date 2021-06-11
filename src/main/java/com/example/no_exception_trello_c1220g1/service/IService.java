@@ -1,4 +1,4 @@
-package com.example.trello_project_alcohol.service;
+package com.example.no_exception_trello_c1220g1.service;
 
 import java.util.List;
 

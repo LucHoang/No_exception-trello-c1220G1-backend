@@ -7,8 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
+//@AllArgsConstructor
+//@NoArgsConstructor
 public class BoardRole {
 //    @Id
 //    private int id;

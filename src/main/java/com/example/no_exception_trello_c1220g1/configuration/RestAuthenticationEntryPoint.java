@@ -1,4 +1,4 @@
-package com.example.trello_project_alcohol.config.securityConfig;
+package com.example.no_exception_trello_c1220g1.configuration;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
