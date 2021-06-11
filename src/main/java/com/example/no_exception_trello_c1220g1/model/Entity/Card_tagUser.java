@@ -1,4 +1,4 @@
-package com.example.no_exception_trello_c1220g1.model;
+package com.example.no_exception_trello_c1220g1.model.Entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,13 +9,13 @@ import javax.persistence.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class BoardTagAppUser {
+public class Card_tagUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
-    @ManyToOne
-    private AppUser appUser;
-    @ManyToOne
-    private Board board;
+    private Long id;
+    @OneToOne
+    private Card card;
+    @OneToOne
+    private User appUser;
 
 }

@@ -1,4 +1,4 @@
-package com.example.no_exception_trello_c1220g1.model;
+package com.example.no_exception_trello_c1220g1.model.Entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,11 +9,12 @@ import javax.persistence.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class MediaFile {
+public class Board {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private  Long id;
-    private String link;
+    private Long id;
+    private String name;
     @ManyToOne
-    private Card card;
+    private User appUser;
+
 }

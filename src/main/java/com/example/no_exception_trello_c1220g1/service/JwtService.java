@@ -1,25 +1,24 @@
-package com.example.no_exception_trello_c1220g1.service.jwtService;
+package com.example.no_exception_trello_c1220g1.service;
 
-import com.example.no_exception_trello_c1220g1.dto.UserPrinciple;
+import com.example.no_exception_trello_c1220g1.model.dto.UserPrinciple;
 import io.jsonwebtoken.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-
 import java.util.Date;
 
 @Component
 @Service
 public class JwtService {
+
     private static final String SECRET_KEY = "123456789";
     private static final long EXPIRE_TIME = 86400000000L;
     private static final Logger logger = LoggerFactory.getLogger(JwtService.class.getName());
 
     public String generateTokenLogin(Authentication authentication) {
         UserPrinciple userPrincipal = (UserPrinciple) authentication.getPrincipal();
-
         return Jwts.builder()
                 .setSubject((userPrincipal.getUsername()))
                 .setIssuedAt(new Date())
@@ -43,12 +42,10 @@ public class JwtService {
         } catch (IllegalArgumentException e) {
             logger.error("JWT claims string is empty -> Message: {}", e);
         }
-
         return false;
     }
 
     public String getUserNameFromJwtToken(String token) {
-
         String userName = Jwts.parser()
                 .setSigningKey(SECRET_KEY)
                 .parseClaimsJws(token)

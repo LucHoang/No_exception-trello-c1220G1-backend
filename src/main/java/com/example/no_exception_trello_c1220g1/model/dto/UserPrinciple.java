@@ -1,6 +1,6 @@
-package com.example.no_exception_trello_c1220g1.dto;
+package com.example.no_exception_trello_c1220g1.model.dto;
 
-import com.example.no_exception_trello_c1220g1.model.AppUser;
+import com.example.no_exception_trello_c1220g1.model.Entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,7 +26,7 @@ public class UserPrinciple implements UserDetails {
 
     private Collection<? extends GrantedAuthority> roles;
 
-    public static UserPrinciple build(AppUser user) {
+    public static UserPrinciple build(User user) {
         List<GrantedAuthority> authorities = user.getAppRole().stream().map(role ->
                 new SimpleGrantedAuthority(role.getRoleName())
         ).collect(Collectors.toList());
