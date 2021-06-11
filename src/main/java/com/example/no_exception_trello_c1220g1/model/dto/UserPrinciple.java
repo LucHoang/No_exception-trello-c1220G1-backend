@@ -1,6 +1,6 @@
-package com.example.no_exception_trello_c1220g1.dto;
+package com.example.no_exception_trello_c1220g1.model.dto;
 
-import com.example.no_exception_trello_c1220g1.model.AppUser;
+import com.example.no_exception_trello_c1220g1.model.Entity.AppUser;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
