@@ -2,9 +2,10 @@ package com.example.no_exception_trello_c1220g1.controller;
 
 import com.example.no_exception_trello_c1220g1.model.Entity.User;
 import com.example.no_exception_trello_c1220g1.model.dto.JwtResponse;
+import com.example.no_exception_trello_c1220g1.service.token.JwtService;
 import com.example.no_exception_trello_c1220g1.model.dto.UserDto;
-import com.example.no_exception_trello_c1220g1.service.JwtService;
 import com.example.no_exception_trello_c1220g1.service.user.IUserService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,10 +19,10 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
 import javax.validation.Valid;
 
 @RestController
+@AllArgsConstructor
 @CrossOrigin("*")
 public class AuthController {
 
