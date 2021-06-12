@@ -12,7 +12,8 @@ import javax.validation.constraints.Size;
 public class UserDto {
     @NotBlank
     private String userName;
-    private MultipartFile avatarMul;
+//    private MultipartFile avatarMul;
+    private String avatar;
     @Email
     @NotBlank
     private String email;

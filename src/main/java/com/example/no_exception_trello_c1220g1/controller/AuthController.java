@@ -56,6 +56,7 @@ public class AuthController {
                     .passWord(userDto.getPassWord())
                     .email(userDto.getEmail())
                     .phone(userDto.getPhone())
+                    .avatar("https://firebasestorage.googleapis.com/v0/b/fir-upload-file-7f971.appspot.com/o/3gqt8ojnhr7?alt=media&token=9ca25d77-b8b4-4f36-b927-9de2bb782eb7")
                     .build();
             return new ResponseEntity<>(userService.save(user), HttpStatus.CREATED);
         }
