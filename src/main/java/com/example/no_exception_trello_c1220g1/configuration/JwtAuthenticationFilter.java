@@ -1,6 +1,6 @@
 package com.example.no_exception_trello_c1220g1.configuration;
 
-import com.example.no_exception_trello_c1220g1.service.JwtService;
+import com.example.no_exception_trello_c1220g1.service.token.JwtService;
 import com.example.no_exception_trello_c1220g1.service.user.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

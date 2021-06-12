@@ -1,9 +1,11 @@
-package com.example.no_exception_trello_c1220g1.service;
+package com.example.no_exception_trello_c1220g1.service.token;
 
 import com.example.no_exception_trello_c1220g1.model.dto.UserPrinciple;
+import com.example.no_exception_trello_c1220g1.repository.ITokenRepository;
 import io.jsonwebtoken.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -11,11 +13,13 @@ import java.util.Date;
 
 @Component
 @Service
-public class JwtService {
+public class JwtService implements ITokenService{
 
     private static final String SECRET_KEY = "123456789";
     private static final long EXPIRE_TIME = 86400000000L;
     private static final Logger logger = LoggerFactory.getLogger(JwtService.class.getName());
+    @Autowired
+    ITokenRepository tokenRepository;
 
     public String generateTokenLogin(Authentication authentication) {
         UserPrinciple userPrincipal = (UserPrinciple) authentication.getPrincipal();
@@ -51,5 +55,10 @@ public class JwtService {
                 .parseClaimsJws(token)
                 .getBody().getSubject();
         return userName;
+    }
+
+    @Override
+    public void deleteToken(String token) {
+        tokenRepository.removeByName(token);
     }
 }
