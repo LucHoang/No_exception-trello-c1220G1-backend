@@ -25,6 +25,6 @@ public class User {
         String bearerToken = request.getHeader("Authorization");
         String token = bearerToken.replace("Bearer ", "");
         jwtService.deleteToken(token);
-        return new ResponseEntity<>("Logout success", HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>("Logout success", HttpStatus.OK);
     }
 }

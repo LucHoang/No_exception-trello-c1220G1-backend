@@ -2,6 +2,7 @@ package com.example.no_exception_trello_c1220g1.configuration;
 
 import com.example.no_exception_trello_c1220g1.service.token.JwtService;
 import com.example.no_exception_trello_c1220g1.service.user.IUserService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,9 +16,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
+
     @Autowired
     private JwtService jwtService;
-
     @Autowired
     private IUserService userService;
 

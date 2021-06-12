@@ -58,4 +58,15 @@ public class UserService implements IUserService {
         User user = userRepository.findByUserName(username);
         return UserPrinciple.build(user);
     }
+
+    @Override
+    public boolean checkUserNameEmail(String username, String email) {
+        User user1 = findByUsername(username);
+        User user2 = userRepository.findByEmail(email);
+
+        if (user1==null && user2==null) {
+            return true;
+        }
+        return false;
+    }
 }
