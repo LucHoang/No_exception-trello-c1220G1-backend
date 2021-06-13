@@ -9,5 +9,5 @@ public interface IUserService extends IGeneralService<User>, UserDetailsService 
 
     User findByUsername(String username);
 
-    boolean checkUserNameEmail(String username, String email);
+    String checkUserNameEmail(String username, String email);
 }

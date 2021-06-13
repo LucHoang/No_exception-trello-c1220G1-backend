@@ -65,13 +65,17 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public boolean checkUserNameEmail(String username, String email) {
+    public String checkUserNameEmail(String username, String email) {
         User user1 = findByUsername(username);
         User user2 = userRepository.findByEmail(email);
 
         if (user1==null && user2==null) {
-            return true;
+            return "OK";
+        } else if (user1 != null && user2 == null) {
+            return "nameExist";
+        } else if (user1 == null) {
+            return "mailExist";
         }
-        return false;
+        return "nameEmailExist";
     }
 }
