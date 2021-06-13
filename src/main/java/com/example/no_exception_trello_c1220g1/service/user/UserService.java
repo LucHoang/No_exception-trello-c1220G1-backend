@@ -44,6 +44,11 @@ public class UserService implements IUserService {
     }
 
     @Override
+    public User updateUser(User user) {
+        return userRepository.save(user);
+    }
+
+    @Override
     public void delete(Long id) {
         userRepository.deleteById(id);
     }
@@ -57,5 +62,20 @@ public class UserService implements IUserService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUserName(username);
         return UserPrinciple.build(user);
+    }
+
+    @Override
+    public String checkUserNameEmail(String username, String email) {
+        User user1 = findByUsername(username);
+        User user2 = userRepository.findByEmail(email);
+
+        if (user1==null && user2==null) {
+            return "OK";
+        } else if (user1 != null && user2 == null) {
+            return "nameExist";
+        } else if (user1 == null) {
+            return "mailExist";
+        }
+        return "nameEmailExist";
     }
 }
