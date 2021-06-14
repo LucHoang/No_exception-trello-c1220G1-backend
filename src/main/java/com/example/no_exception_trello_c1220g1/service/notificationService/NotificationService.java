@@ -1,4 +1,4 @@
-package com.example.no_exception_trello_c1220g1.service.notification;
+package com.example.no_exception_trello_c1220g1.service.notificationService;
 
 import com.example.no_exception_trello_c1220g1.model.Entity.Notification;
 import org.springframework.stereotype.Service;
