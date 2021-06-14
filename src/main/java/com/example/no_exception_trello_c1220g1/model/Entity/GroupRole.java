@@ -11,6 +11,6 @@ public class GroupRole {
 
     private int id;
     private User user;
-    private Group group;
+    private GroupTrello groupTrello;
     private Role role;
 }

@@ -1,24 +1,31 @@
 package com.example.no_exception_trello_c1220g1.service.group;
 
-import com.example.no_exception_trello_c1220g1.model.Entity.Group;
+import com.example.no_exception_trello_c1220g1.model.Entity.GroupTrello;
+import com.example.no_exception_trello_c1220g1.repository.IGroupRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class GroupService implements IGroupService{
+    @Autowired
+    IGroupRepository groupRepository;
+
     @Override
-    public List<Group> findAll() {
+    public List<GroupTrello> findAll() {
         return null;
     }
 
     @Override
-    public Optional<Group> findById(Long id) {
+    public Optional<GroupTrello> findById(Long id) {
         return Optional.empty();
     }
 
     @Override
-    public Group save(Group group) {
-        return null;
+    public GroupTrello save(GroupTrello groupTrello) {
+        return groupRepository.save(groupTrello);
     }
 
     @Override
