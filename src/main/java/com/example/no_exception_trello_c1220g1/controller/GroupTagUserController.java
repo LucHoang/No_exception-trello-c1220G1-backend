@@ -30,7 +30,12 @@ public class GroupTagUserController {
     EmailService emailService;
 
     @GetMapping("add/{groupId}/{email}/{roleUser}")
-    public ResponseEntity<GroupTagUser> add(@PathVariable Long groupId, @PathVariable String email, @PathVariable String roleUser, HttpServletRequest request){
+    public ResponseEntity<?> add(@PathVariable Long groupId, @PathVariable String email, @PathVariable String roleUser, HttpServletRequest request){
+        User userMail = userService.findByEmail(email);
+        if (userMail == null) {
+            return new ResponseEntity<>("Email does not exist!", HttpStatus.BAD_REQUEST);
+        }
+
         String authHeader = request.getHeader("Authorization");
         String userName = jwtService.getUserNameFromJwtToken(authHeader.replace("Bearer ", ""));
         User user = userService.findByUsername(userName);
@@ -41,7 +46,7 @@ public class GroupTagUserController {
         }
 
         GroupTagUser groupTagUser = GroupTagUser.builder()
-                .user(userService.findByEmail(email))
+                .user(userMail)
                 .groupTrello(groupService.findById(groupId).get())
                 .roleUser(roleUser)
                 .build();
