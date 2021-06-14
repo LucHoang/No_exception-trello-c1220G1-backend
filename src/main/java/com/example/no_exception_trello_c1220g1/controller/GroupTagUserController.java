@@ -21,11 +21,15 @@ public class GroupTagUserController {
     JwtService jwtService;
     @GetMapping("/{id}")
     public ResponseEntity<Iterable<GroupTagUser>> findAllByUserId(@PathVariable Long id, HttpServletRequest request){
-        String authHeader = request.getHeader("Authorization");
-
-        String username = jwtService.getUserNameFromJwtToken(authHeader.replace("Bearer ",""));
+//        String authHeader = request.getHeader("Authorization");
+//
+//        String username = jwtService.getUserNameFromJwtToken(authHeader.replace("Bearer ",""));
 
         Iterable<GroupTagUser> groupTagUsers = groupTagUserService.findAllByUserId(id);
         return new ResponseEntity<>(groupTagUsers,HttpStatus.OK);
+    }
+    @GetMapping("/{id}/{type}")
+    public ResponseEntity<Iterable<GroupTagUser>> findAllByUserIdAndType(@PathVariable Long id,@PathVariable String type){
+        return new ResponseEntity<>(groupTagUserService.findAllByUserIdAndType(id,type),HttpStatus.OK);
     }
 }
