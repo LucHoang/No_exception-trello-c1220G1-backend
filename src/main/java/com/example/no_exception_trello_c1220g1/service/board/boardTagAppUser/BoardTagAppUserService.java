@@ -1,28 +1,30 @@
 package com.example.no_exception_trello_c1220g1.service.board.boardTagAppUser;
 
-import com.example.no_exception_trello_c1220g1.model.Entity.TagUser_Board;
+import com.example.no_exception_trello_c1220g1.model.Entity.BoardTagAppUser;
+import com.example.no_exception_trello_c1220g1.repository.IBoardTagAppUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class BoardTagAppUserService implements IBoardTagAppUserService{
+    @Autowired
+    IBoardTagAppUserRepository boardTagAppUserRepository;
     @Override
-    public List<TagUser_Board> findAll() {
+    public List<BoardTagAppUser> findAll() {
         return null;
     }
 
     @Override
-    public Optional<TagUser_Board> findById(Long id) {
+    public Optional<BoardTagAppUser> findById(Long id) {
         return Optional.empty();
     }
 
     @Override
-    public TagUser_Board save(TagUser_Board tagUser_board) {
-        return null;
+    public BoardTagAppUser save(BoardTagAppUser boardTagAppUser) {
+        return boardTagAppUserRepository.save(boardTagAppUser);
     }
 
     @Override

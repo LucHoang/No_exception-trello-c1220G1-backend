@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 
 @Entity
 @Data
@@ -13,10 +14,13 @@ public class Board {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotBlank
     private String name;
     @ManyToOne
-    private User appUser;
-    private Long groupId;
+    private User user;
+    @ManyToOne
+    private GroupTrello groupTrello;
+    @NotBlank
     private String type;
 
 }
