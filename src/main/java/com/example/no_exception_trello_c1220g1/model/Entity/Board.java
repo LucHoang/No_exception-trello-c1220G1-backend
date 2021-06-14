@@ -17,5 +17,6 @@ public class Board {
     @ManyToOne
     private User appUser;
     private Long groupId;
+    private String type;
 
 }

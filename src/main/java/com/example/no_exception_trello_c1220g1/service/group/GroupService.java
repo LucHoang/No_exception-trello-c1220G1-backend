@@ -20,7 +20,7 @@ public class GroupService implements IGroupService{
 
     @Override
     public Optional<GroupTrello> findById(Long id) {
-        return Optional.empty();
+        return groupRepository.findById(id);
     }
 
     @Override

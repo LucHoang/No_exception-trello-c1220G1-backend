@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface IGroupTagUserRepository extends JpaRepository<GroupTagUser,Long> {
+    GroupTagUser findByGroupTrello_IdAndAndUser_Id (Long groupId, Long userId);
 }

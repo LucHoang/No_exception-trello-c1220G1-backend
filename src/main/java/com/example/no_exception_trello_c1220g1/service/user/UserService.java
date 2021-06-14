@@ -32,6 +32,11 @@ public class UserService implements IUserService {
     }
 
     @Override
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+    @Override
     public User save(User user) {
         Set<Role> roles = new HashSet<>();
         roles.add(Role.builder()

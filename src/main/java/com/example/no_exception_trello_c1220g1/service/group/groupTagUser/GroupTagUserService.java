@@ -24,6 +24,11 @@ public class GroupTagUserService implements IGroupTagUserService{
     }
 
     @Override
+    public GroupTagUser findByGroupIdAndUserId(Long groupId, Long userId) {
+        return groupTagUserRepository.findByGroupTrello_IdAndAndUser_Id(groupId, userId);
+    }
+
+    @Override
     public GroupTagUser save(GroupTagUser groupTagUser) {
         return groupTagUserRepository.save(groupTagUser);
     }
