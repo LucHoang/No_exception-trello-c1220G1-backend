@@ -18,6 +18,6 @@ public class Card {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int position;
     @ManyToOne
-    private List list;
+    private ListTrello listTrello;
 
 }
