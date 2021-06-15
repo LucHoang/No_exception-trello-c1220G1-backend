@@ -53,6 +53,7 @@ public class CardController {
 //    }
     @PostMapping("create")
     public ResponseEntity<?> createCard(@RequestBody Card card, HttpServletRequest request){
+        //Todo dùng Security
         String authHeader = request.getHeader("Authorization");
         String userName = jwtService.getUserNameFromJwtToken(authHeader.replace("Bearer ", ""));
         User user = userService.findByUsername(userName);

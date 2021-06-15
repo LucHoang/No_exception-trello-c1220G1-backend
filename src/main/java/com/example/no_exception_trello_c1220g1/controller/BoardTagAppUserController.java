@@ -42,6 +42,7 @@ public class BoardTagAppUserController {
     @Autowired
     EmailService emailService;
 
+    //Todo Cho vào request, không cho email hay role lên pathVariable ntn.
     @GetMapping("add/{boardId}/{email}/{roleUser}")
     public ResponseEntity<?> add(@PathVariable Long boardId, @PathVariable String email, @PathVariable String roleUser, HttpServletRequest request){
         User userMail = userService.findByEmail(email);
@@ -51,7 +52,7 @@ public class BoardTagAppUserController {
         if (boardTagAppUserService.findByBoardIdAndUserId(boardId, userMail.getId()) != null) {
             return new ResponseEntity<>("User is already a member", HttpStatus.BAD_REQUEST);
         }
-
+        //Todo dùng SecurityContextHolder.getContext().getAuthentication() để lấy thông tin userName, Chỉ xử lí token ở bước filter đầu tiên;
         String authHeader = request.getHeader("Authorization");
         String userName = jwtService.getUserNameFromJwtToken(authHeader.replace("Bearer ", ""));
         User user = userService.findByUsername(userName);
@@ -73,12 +74,12 @@ public class BoardTagAppUserController {
     }
 //    @Autowired
 //    private BoardTagAppUserService boardTagAppUserService;
-
+    //Todo đặt lên endpoint không viết liền ntn. list-board-with-type
     @GetMapping("listboardwithtype/")
     public ResponseEntity<List<BoardDto>> getListByType( HttpServletRequest request){
                 String authHeader = request.getHeader("Authorization");
 
-
+        //Todo áp dụng Nguyên lý S trong SOLID 1 hàm chỉ làm 1 nhiệm vụ, không xử lí token ở đây,
         String username = jwtService.getUserNameFromJwtToken(authHeader.replace("Bearer ",""));
         Long userId = userService.findByUsername(username).getId();
 
@@ -86,6 +87,7 @@ public class BoardTagAppUserController {
         List<BoardDto> boardDtoList = new ArrayList<>();
         for (BoardTagAppUser board:boardTagAppUserList
              ) {
+            //Todo không setFields Dto ở đây, đẩy xử lí trong service
             BoardDto boardDto = new BoardDto();
             boardDto.setType(board.getBoard().getType());
             boardDto.setGroupTrello(board.getBoard().getGroupTrello());

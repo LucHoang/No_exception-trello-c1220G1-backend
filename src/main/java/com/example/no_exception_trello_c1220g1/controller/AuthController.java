@@ -36,6 +36,7 @@ public class AuthController {
     private IUserService userService;
 
     @PostMapping("/login")
+    //Todo validate RequestBody, tạo class LoginReq
     public ResponseEntity<?> login(@RequestBody User user) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(user.getUserName(), user.getPassWord()));
