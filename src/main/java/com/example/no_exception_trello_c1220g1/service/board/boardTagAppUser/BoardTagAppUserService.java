@@ -1,6 +1,7 @@
 package com.example.no_exception_trello_c1220g1.service.board.boardTagAppUser;
 
 import com.example.no_exception_trello_c1220g1.model.Entity.BoardTagAppUser;
+import com.example.no_exception_trello_c1220g1.model.Entity.GroupTagUser;
 import com.example.no_exception_trello_c1220g1.repository.IBoardTagAppUserRepository;
 
 import com.example.no_exception_trello_c1220g1.model.Entity.User;
@@ -15,6 +16,12 @@ import java.util.Optional;
 public class BoardTagAppUserService implements IBoardTagAppUserService{
     @Autowired
     IBoardTagAppUserRepository boardTagAppUserRepository;
+
+    @Override
+    public BoardTagAppUser findByBoardIdAndUserId(Long boardId, Long userId) {
+        return boardTagAppUserRepository.findByBoard_IdAndAppUser_Id(boardId, userId);
+    }
+
     @Override
     public List<BoardTagAppUser> findAll() {
         return null;
