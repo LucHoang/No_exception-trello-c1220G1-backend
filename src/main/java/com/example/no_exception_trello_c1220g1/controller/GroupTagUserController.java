@@ -33,7 +33,10 @@ public class GroupTagUserController {
     public ResponseEntity<?> add(@PathVariable Long groupId, @PathVariable String email, @PathVariable String roleUser, HttpServletRequest request){
         User userMail = userService.findByEmail(email);
         if (userMail == null) {
-            return new ResponseEntity<>("Email does not exist!", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Email does not exist!", HttpStatus.NOT_FOUND);
+        }
+        if (groupTagUserService.findByGroupIdAndUserId(groupId, userMail.getId()) != null) {
+            return new ResponseEntity<>("User is already a member", HttpStatus.BAD_REQUEST);
         }
 
         String authHeader = request.getHeader("Authorization");

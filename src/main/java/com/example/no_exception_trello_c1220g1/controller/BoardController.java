@@ -87,8 +87,8 @@ public class BoardController {
 //        return new ResponseEntity<>(boardService.findAllNameByTagUserBoard(id), HttpStatus.OK);
 //    }
 //
-//    @GetMapping("findBoardById/{id}")
-//    public ResponseEntity<Board> findBoardById(@PathVariable Long id) {
-//        return new ResponseEntity<>(boardService.findById(id), HttpStatus.OK);
-//    }
+    @GetMapping("findBoardById/{id}")
+    public ResponseEntity<Board> findBoardById(@PathVariable Long id) {
+        return new ResponseEntity<Board>(boardService.findById(id).get(), HttpStatus.OK);
+    }
 }
