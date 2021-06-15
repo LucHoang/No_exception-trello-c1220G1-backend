@@ -1,6 +1,7 @@
 package com.example.no_exception_trello_c1220g1.service.cardService;
 
 import com.example.no_exception_trello_c1220g1.model.Entity.Card;
+import com.example.no_exception_trello_c1220g1.repository.ICardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -11,6 +12,8 @@ import java.util.Optional;
 
 @Service
 public class CardService implements ICardService {
+    @Autowired
+    ICardRepository cardRepository;
     @Override
     public List<Card> findAll() {
         return null;
@@ -19,11 +22,6 @@ public class CardService implements ICardService {
     @Override
     public Optional<Card> findById(Long id) {
         return Optional.empty();
-    }
-
-    @Override
-    public Card save(Card card) {
-        return null;
     }
 
     @Override
@@ -43,10 +41,10 @@ public class CardService implements ICardService {
 //        return cardRepo.findById(id).get();
 //    }
 //
-//    @Override
-//    public Card save(Card card) {
-//        return cardRepo.save(card);
-//    }
+    @Override
+    public Card save(Card card) {
+        return cardRepository.save(card);
+    }
 //
 //    @Override
 //    @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -54,10 +52,11 @@ public class CardService implements ICardService {
 //        cardRepo.deleteById(id);
 //    }
 //
-//    @Override
-//    public List<Card> findCardsByListId(Long id) {
-//        return cardRepo.findCardsByList_IdOrderByPosition(id);
-//    }
+    @Override
+    public List<Card> findCardsByListId(Long id) {
+        List<Card> cardList = cardRepository.findCardsByListTrello_IdOrderByPosition(id);
+        return cardList;
+    }
 //
 //    @Override
 //
