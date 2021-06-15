@@ -61,9 +61,6 @@ public class AuthController {
         if (userService.checkUserNameEmail(userDto.getUserName(), userDto.getEmail()).equals("mailExist")) {
             return new ResponseEntity<>("Email already exists", HttpStatus.BAD_REQUEST);
         }
-        if (userService.checkUserNameEmail(userDto.getUserName(), userDto.getEmail()).equals("nameEmailExist")) {
-            return new ResponseEntity<>("Username and email already exists", HttpStatus.BAD_REQUEST);
-        }
 
         User user = User.builder()
                 .userName(userDto.getUserName())

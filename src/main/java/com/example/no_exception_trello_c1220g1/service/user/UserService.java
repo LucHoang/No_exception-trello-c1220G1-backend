@@ -10,6 +10,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -60,6 +63,7 @@ public class UserService implements IUserService {
     }
 
     @Override
+//    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public User findByUsername(String username) {
         return userRepository.findByUserName(username);
     }
@@ -80,12 +84,11 @@ public class UserService implements IUserService {
 
         if (user1==null && user2==null) {
             return "OK";
-        } else if (user1 != null && user2 == null) {
+        } else if (user1 != null) {
             return "nameExist";
-        } else if (user1 == null) {
+        } else {
             return "mailExist";
         }
-        return "nameEmailExist";
     }
 
     @Override
