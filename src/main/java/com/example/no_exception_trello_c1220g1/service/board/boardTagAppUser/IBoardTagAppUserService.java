@@ -11,4 +11,6 @@ public interface IBoardTagAppUserService extends IGeneralService<BoardTagAppUser
 
     //    List<AppUser> getListTagUser(Long board_id);
 List<User> getListTagUser(Long board_id);
+    List<BoardTagAppUser> findBoardByUserIdAndTypeBoardAndRoleUser(Long id);
+
 }

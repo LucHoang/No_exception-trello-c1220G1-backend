@@ -57,6 +57,12 @@ public class BoardTagAppUserService implements IBoardTagAppUserService{
 
     }
 
+    @Override
+    public List<BoardTagAppUser> findBoardByUserIdAndTypeBoardAndRoleUser(Long id) {
+
+        return boardTagAppUserRepository.findBoardTagAppUserByUserIdAndTypeBoardAndRoleUser(id);
+    }
+
 
     public boolean checkListContainItem(User appUser, List<User> appUserList){
         for (User a: appUserList) {
