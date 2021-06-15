@@ -14,47 +14,19 @@ public class ListService implements IListService{
     @Autowired
     IListRepository listRepository;
 
-//    @Override
-//    public List<com.example.no_exception_trello_c1220g1.model.Entity.List> findAll() {
-//        return null;
-//    }
 
-//    @Override
-//    public Optional<com.example.no_exception_trello_c1220g1.model.Entity.List> findById(Long id) {
-//        return Optional.empty();
-//    }
 
     @Override
     public List<ListTrello> findAll() {
-        return null;
+        return listRepository.findAll();
     }
 
     @Override
     public Optional<ListTrello> findById(Long id) {
-        return Optional.empty();
+        return listRepository.findById(id);
     }
 
-    //    @Override
-//    public List save(List list) {
-//        return null;
-//    }
-//
-//    @Override
-//    public void delete(Long id) {
-//
-//    }
-//    @Autowired
-//    private ListRepo listRepo;
-//    @Override
-//    public java.util.List<List> findAll() {
-//        return listRepo.findAll();
-//    }
-//
-//    @Override
-//    public List findById(Long id) {
-//        return listRepo.findById(id).get();
-//    }
-//
+
     @Override
     public ListTrello save(ListTrello list) {
         return listRepository.save(list);
@@ -62,32 +34,26 @@ public class ListService implements IListService{
 
     @Override
     public void delete(Long id) {
-
+    listRepository.delete(findById(id).get());
     }
 
-    //
-//    @Override
-//    public void delete(Long id) {
-//        listRepo.deleteById(id);
-//
-//    }
-//
-//    @Override
-//    public void editPositionList(ArrayList<List> lists) {
-//        for (int i = 0; i < lists.size(); i++) {
-//            listRepo.save(lists.get(i));
-//        }
-//    }
-//
+
+    @Override
+    public void editPositionList(ArrayList<ListTrello> lists) {
+        for (int i = 0; i < lists.size(); i++) {
+            listRepository.save(lists.get(i));
+        }
+    }
+
     @Override
     public java.util.List<ListTrello> findListByBoardId(Long id) {
         return listRepository.findListByBoard_IdOrderByPosition(id);
     }
-//    @Override
-//    public List editTitleList(List list, Long id) {
-//        list.setId(id);
-//        return listRepo.save(list);
-//    }
+    @Override
+    public ListTrello editTitleList(ListTrello list, Long id) {
+        list.setId(id);
+        return listRepository.save(list);
+    }
 
 }
 

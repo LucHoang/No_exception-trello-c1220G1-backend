@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public interface IListService extends IGeneralService<ListTrello> {
-//    void editPositionList(ArrayList<List> lists);
+    void editPositionList(ArrayList<ListTrello> lists);
     java.util.List<ListTrello> findListByBoardId(Long id);
-//    List editTitleList(List list, Long id);
+    ListTrello editTitleList(ListTrello list, Long id);
 }

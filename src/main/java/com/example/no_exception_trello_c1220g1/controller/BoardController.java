@@ -25,23 +25,15 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/board")
 public class BoardController {
-    @Autowired
-    private IGroupService groupService;
+
     @Autowired
     private IBoardService boardService;
-    @Autowired
-    private IUserService userService;
+
     @Autowired
     private IGroupTagUserService groupTagUserService;
     @Autowired
     private IBoardTagAppUserService boardTagAppUserService;
-    @Autowired
-    private JwtService jwtService;
-//
-//    @GetMapping("")
-//    public ResponseEntity<List<Board>> showAll() {
-//        return new ResponseEntity<>(boardService.findAll(), HttpStatus.OK);
-//    }
+
 
 
     @GetMapping("")
@@ -76,19 +68,9 @@ public class BoardController {
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
-//
-//    @GetMapping("listAppBoard/{id}")
-//    public ResponseEntity<List<Board>> showAllNameBoardByTagUser(@PathVariable Long id) {
-//        return new ResponseEntity<>(boardService.findAllNameBoardAppUser(id), HttpStatus.OK);
-//    }
-//
-//    @GetMapping("listBoardTagUser/{id}")
-//    public ResponseEntity<List<Board>> showAllBoardTagUser(@PathVariable Long id) {
-//        return new ResponseEntity<>(boardService.findAllNameByTagUserBoard(id), HttpStatus.OK);
-//    }
-//
+
     @GetMapping("findBoardById/{id}")
     public ResponseEntity<Board> findBoardById(@PathVariable Long id) {
-        return new ResponseEntity<Board>(boardService.findById(id).get(), HttpStatus.OK);
+        return new ResponseEntity<>(boardService.findById(id).get(), HttpStatus.OK);
     }
 }
