@@ -20,6 +20,6 @@ public interface IUserService extends IGeneralService<User>, UserDetailsService 
 
     List<User> findUserAndTagUserByBoard(Long board_id);
 
-
+    List<User> findAllUserByGroup(Long group_id);
 
 }

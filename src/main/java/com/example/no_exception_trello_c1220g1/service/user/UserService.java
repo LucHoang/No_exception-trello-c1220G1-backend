@@ -93,7 +93,10 @@ public class UserService implements IUserService {
         return userRepository.findTagUserByBoard(board_id);
     }
 
-
+    @Override
+    public List<User> findAllUserByGroup(Long group_id) {
+        return userRepository.findUserByGroup(group_id);
+    }
 
 
 }

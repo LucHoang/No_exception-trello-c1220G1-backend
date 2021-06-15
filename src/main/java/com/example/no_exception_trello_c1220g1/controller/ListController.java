@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.ArrayList;
 
 @Controller
 @RequestMapping("")
@@ -29,10 +30,10 @@ public class ListController {
     private UserService userService;
     @Autowired
     private IBoardTagAppUserService boardTagAppUserService;
-//    @GetMapping("/board/{id}")
-//    public ResponseEntity<?> findListByBoardId(@PathVariable Long id){
-//        return new ResponseEntity<>(listService.findListByBoardId(id),HttpStatus.OK);
-//    }
+    @GetMapping("/board/{id}")
+    public ResponseEntity<?> findListByBoardId(@PathVariable Long id){
+        return new ResponseEntity<>(listService.findListByBoardId(id),HttpStatus.OK);
+    }
     @PostMapping("createList")
     public ResponseEntity<?> createList(@Valid @RequestBody ListTrello list, HttpServletRequest request, BindingResult bindingResult){
         if (bindingResult.hasFieldErrors()) {
@@ -53,11 +54,11 @@ public class ListController {
         listService.save(list);
         return new  ResponseEntity<>("Create obj List success", HttpStatus.OK);
     }
-//    @PutMapping("editPositionList")
-//    public ResponseEntity<?> changePositionList(@RequestBody ArrayList<List> lists){
-//        listService.editPositionList(lists);
-//        return new ResponseEntity(new ResultResponse("Change position ok"),HttpStatus.OK);
-//    }
+    @PutMapping("editPositionList")
+    public ResponseEntity<?> changePositionList(@RequestBody ArrayList<ListTrello> lists){
+        listService.editPositionList(lists);
+        return new ResponseEntity<>("Change position ok",HttpStatus.OK);
+    }
 //    @GetMapping("findList/{id}")
 //    ResponseEntity<List> findListById(@PathVariable Long id) {
 //        return new ResponseEntity<>(listService.findById(id), HttpStatus.OK);

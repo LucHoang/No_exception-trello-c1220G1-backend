@@ -17,5 +17,6 @@ public interface IUserRepository extends JpaRepository<User, Long> {
     User findByEmail(String email);
     @Query(value = "select u from User as u join BoardTagAppUser as t on u.id= t.appUser.id where t.board.id = ?1")
     List<User> findTagUserByBoard(Long Board_id);
-
+    @Query(value = "select u from User as u join GroupTagUser as t on u.id =t.user.id where t.groupTrello.id=?1 ")
+    List<User> findUserByGroup(Long groupid);
 }
