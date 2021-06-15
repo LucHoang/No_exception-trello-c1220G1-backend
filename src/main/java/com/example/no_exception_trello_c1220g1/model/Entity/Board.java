@@ -16,6 +16,8 @@ public class Board {
     private String name;
     @ManyToOne
     private User appUser;
-    private Long groupId;
+    @ManyToOne
+    private GroupTrello groupId;
+    private String type;
 
 }
