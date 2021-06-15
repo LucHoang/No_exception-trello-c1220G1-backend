@@ -67,6 +67,9 @@ public class UserService implements IUserService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUserName(username);
+        if (user == null ){
+            user = userRepository.findByEmail(username);
+        }
         return UserPrinciple.build(user);
     }
 
@@ -89,6 +92,8 @@ public class UserService implements IUserService {
     public List<User> findUserAndTagUserByBoard(Long board_id) {
         return userRepository.findTagUserByBoard(board_id);
     }
+
+
 
 
 }
