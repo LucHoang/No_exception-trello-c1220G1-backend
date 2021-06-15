@@ -56,7 +56,6 @@ public class JwtService implements ITokenService{
                 .getBody().getSubject();
         return userName;
     }
-
     @Override
     public void deleteToken(String token) {
         tokenRepository.removeByName(token);

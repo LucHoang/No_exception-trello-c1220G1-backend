@@ -11,20 +11,21 @@ import java.util.Optional;
 @Service
 public class BoardService implements IBoardService{
     @Autowired
-    IBoardRepository iBoardRepository;
+    IBoardRepository boardRepository;
+
     @Override
     public List<Board> findAll() {
-        return iBoardRepository.findAll();
+        return boardRepository.findAll();
     }
 
     @Override
     public Optional<Board> findById(Long id) {
-        return iBoardRepository.findById(id);
+        return boardRepository.findById(id);
     }
 
     @Override
     public Board save(Board board) {
-        return null;
+        return boardRepository.save(board);
     }
 
     @Override
@@ -34,6 +35,6 @@ public class BoardService implements IBoardService{
 
     @Override
     public Iterable<Board> findBoardByGroupId(Long id) {
-        return iBoardRepository.findBoardsByGroupId(id);
+        return boardRepository.findBoardsByGroupId(id);
         }
 }

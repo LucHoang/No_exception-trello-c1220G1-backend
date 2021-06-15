@@ -1,11 +1,12 @@
 package com.example.no_exception_trello_c1220g1.service.board.boardTagAppUser;
 
-import com.example.no_exception_trello_c1220g1.model.Entity.TagUser_Board;
+import com.example.no_exception_trello_c1220g1.model.Entity.BoardTagAppUser;
+import com.example.no_exception_trello_c1220g1.repository.IBoardTagAppUserRepository;
+
 import com.example.no_exception_trello_c1220g1.model.Entity.User;
 import com.example.no_exception_trello_c1220g1.service.user.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -13,26 +14,25 @@ import java.util.Optional;
 @Service
 public class BoardTagAppUserService implements IBoardTagAppUserService{
     @Autowired
-    IBoardTagAppUserService boardTagAppUserService;
-
+    IBoardTagAppUserRepository boardTagAppUserRepository;
     @Override
-    public List<TagUser_Board> findAll() {
-        return boardTagAppUserService.findAll();
+    public List<BoardTagAppUser> findAll() {
+        return null;
     }
 
     @Override
-    public Optional<TagUser_Board> findById(Long id) {
-        return boardTagAppUserService.findById(id);
+    public Optional<BoardTagAppUser> findById(Long id) {
+        return Optional.empty();
     }
 
     @Override
-    public TagUser_Board save(TagUser_Board tagUser_board) {
-        return boardTagAppUserService.save(tagUser_board);
+    public BoardTagAppUser save(BoardTagAppUser boardTagAppUser) {
+        return boardTagAppUserRepository.save(boardTagAppUser);
     }
 
     @Override
     public void delete(Long id) {
-        boardTagAppUserService.delete(id);
+
     }
 
     @Autowired
@@ -57,4 +57,45 @@ public class BoardTagAppUserService implements IBoardTagAppUserService{
         }
         return false;
     }
+//    @Autowired
+//    private TagUser_Board_Repo tagUserBoardRepo;
+//
+//    @Autowired
+//    private IAppUserService userService;
+//
+//    @Override
+//    public List<TagUser_Board> findAll() {
+//        return tagUserBoardRepo.findAll();
+//    }
+//
+//    @Override
+//    public TagUser_Board findById(Long id) {
+//        return null;
+//    }
+//
+//    @Override
+//    public TagUser_Board save(TagUser_Board tagUser_board) {
+//        return tagUserBoardRepo.save(tagUser_board);
+//    }
+//    @Override
+//    public void delete(Long id) {
+//    }
+//
+//    @Override
+//    public List<AppUser> getListTagUser(Long board_id) {
+//        List<AppUser> listTagUser = new ArrayList<>();
+//        List<AppUser> allUsers = userService.findAll();
+//        List<AppUser> listUsersByBoard = userService.findUserAndTagUserByBoard(board_id);
+//        for (AppUser user: allUsers ) {
+//            if (!checkListContainItem(user, listUsersByBoard)) listTagUser.add(user);
+//        }
+//        return listTagUser;
+//    }
+//
+//    public boolean checkListContainItem(AppUser appUser, List<AppUser> appUserList){
+//        for (AppUser a: appUserList) {
+//            if (a.getId()==appUser.getId()) return true;
+//        }
+//        return false;
+//    }
 }

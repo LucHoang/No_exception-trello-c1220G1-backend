@@ -1,7 +1,7 @@
 package com.example.no_exception_trello_c1220g1.service.user;
 
 import com.example.no_exception_trello_c1220g1.model.Entity.Role;
-import com.example.no_exception_trello_c1220g1.model.Entity.TagUser_Board;
+
 import com.example.no_exception_trello_c1220g1.model.Entity.User;
 import com.example.no_exception_trello_c1220g1.model.dto.UserPrinciple;
 import com.example.no_exception_trello_c1220g1.repository.IUserRepository;
@@ -30,6 +30,11 @@ public class UserService implements IUserService {
     @Override
     public Optional<User> findById(Long id) {
         return userRepository.findById(id);
+    }
+
+    @Override
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 
     @Override
