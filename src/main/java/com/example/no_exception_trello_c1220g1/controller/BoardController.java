@@ -42,6 +42,7 @@ public class BoardController {
     }
     @GetMapping("listboardingroup/{id}")
     public ResponseEntity<Iterable<Board>> showListBoardInGroup(@PathVariable Long id){
+        //Todo dùng cái gì đây? sao 1 hàm 2 lần gọi service vậy? listBoard để làm gì đây?
         Optional<Board> listBoard = boardService.findById(id);
         return new ResponseEntity<>(boardService.findBoardByGroupId(id),HttpStatus.OK);
     }
