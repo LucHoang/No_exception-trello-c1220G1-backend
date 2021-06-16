@@ -16,6 +16,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -52,7 +53,7 @@ public class CardController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
     @PutMapping("edit/{boardId}/{id}")
-    public ResponseEntity<?> editCard(@PathVariable Long boardId,@PathVariable Long id, @RequestBody CardDto cardDto){
+    public ResponseEntity<?> editCard(@PathVariable Long boardId, @PathVariable Long id, @RequestBody CardDto cardDto, Principal principal){
         User user = userService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         BoardTagAppUser boardTagAppUser = boardTagAppUserService.findByBoardIdAndUserId(boardId, user.getId());
         if(boardTagAppUser== null){
