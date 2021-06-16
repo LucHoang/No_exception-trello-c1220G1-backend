@@ -41,15 +41,15 @@ public class CardController {
 //            cardService.save(card);
 //        }
 //        return new ResponseEntity<>(HttpStatus.OK);
+////    }
+//    @PutMapping("edit/{id}")
+//    public ResponseEntity<?> editCard(@PathVariable Long id, @RequestBody CardDto cardDto){
+//        User user = userService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+//
+//        cardDto.setId(id);
+//        cardService.save(cardDto);
+//        return new ResponseEntity<>(HttpStatus.OK);
 //    }
-    @PutMapping("edit/{id}")
-    public ResponseEntity<?> editCard(@PathVariable Long id, @RequestBody CardDto cardDto){
-        User user = userService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-
-        cardDto.setId(id);
-        cardService.save(cardDto);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
 //    @GetMapping("/{id}")
 //    public ResponseEntity<Card> findCardById(@PathVariable Long id){
 //        return new ResponseEntity<>(cardService.findById(id), HttpStatus.OK);
