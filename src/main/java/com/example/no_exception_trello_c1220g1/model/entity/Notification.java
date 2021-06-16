@@ -16,7 +16,6 @@ public class Notification extends Auditable<String>{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String content;
-    @ManyToMany
-    private Set<User> appUser;
-
+//    @ManyToOne
+//    private Notification notification;
 }
