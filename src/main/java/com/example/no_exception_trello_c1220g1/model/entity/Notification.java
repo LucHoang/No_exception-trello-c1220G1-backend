@@ -11,12 +11,11 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Notification {
+public class Notification extends Auditable<String>{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String content;
-    @ManyToMany
-    private Set<User> appUser;
-
+//    @ManyToOne
+//    private Notification notification;
 }

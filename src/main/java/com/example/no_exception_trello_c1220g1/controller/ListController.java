@@ -44,9 +44,9 @@ public class ListController {
         if (bindingResult.hasFieldErrors()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-
-        String authHeader = request.getHeader("Authorization");
-        String userName = jwtService.getUserNameFromJwtToken(authHeader.replace("Bearer ", ""));
+//        String authHeader = request.getHeader("Authorization");
+//        String userName = jwtService.getUserNameFromJwtToken(authHeader.replace("Bearer ", ""));
+        String userName = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userService.findByUsername(userName);
         BoardTagAppUser boardTagUserCheck = boardTagAppUserService.findByBoardIdAndUserId(list.getBoard().getId(), user.getId());
 
@@ -61,6 +61,14 @@ public class ListController {
     }
     @PutMapping("editPositionList")
     public ResponseEntity<?> changePositionList(@RequestBody ArrayList<ListTrello> lists){
+        String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userService.findByUsername(userName);
+        BoardTagAppUser boardTagUserCheck = boardTagAppUserService.findByBoardIdAndUserId(lists.get(0).getBoard().getId(), user.getId());
+
+        if (boardTagUserCheck.getRoleUser().equals("ROLE_VIEW")) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+
         listService.editPositionList(lists);
         return new ResponseEntity<>("Change position ok",HttpStatus.OK);
     }

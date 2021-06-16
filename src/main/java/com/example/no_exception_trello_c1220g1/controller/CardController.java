@@ -16,6 +16,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @RestController
 @CrossOrigin("*")
@@ -35,13 +36,21 @@ public class CardController {
 //    public ResponseEntity<List<Card>> findCardsByListId(@PathVariable Long id){
 //        return new ResponseEntity<>(cardService.findCardsByListId(id), HttpStatus.OK);
 //    }
-//    @PutMapping("changePosition")
-//    public ResponseEntity<?> changePositionCard(@RequestBody List<Card> cards){
-//        for (Card card:cards) {
-//            cardService.save(card);
-//        }
-//        return new ResponseEntity<>(HttpStatus.OK);
-////    }
+    @PutMapping("changePosition")
+    public ResponseEntity<?> changePositionCard(@RequestBody List<Card> cards){
+        String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userService.findByUsername(userName);
+        BoardTagAppUser boardTagUserCheck = boardTagAppUserService.findByBoardIdAndUserId(cards.get(0).getListTrello().getBoard().getId(), user.getId());
+
+        if (boardTagUserCheck.getRoleUser().equals("ROLE_VIEW")) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+
+        for (Card card:cards) {
+            cardService.save(card);
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 //    @PutMapping("edit/{id}")
 //    public ResponseEntity<?> editCard(@PathVariable Long id, @RequestBody CardDto cardDto){
 //        User user = userService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
