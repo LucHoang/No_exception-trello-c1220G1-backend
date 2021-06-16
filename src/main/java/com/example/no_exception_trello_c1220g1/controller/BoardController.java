@@ -1,19 +1,23 @@
 package com.example.no_exception_trello_c1220g1.controller;
 
 import com.example.no_exception_trello_c1220g1.model.entity.Board;
+import com.example.no_exception_trello_c1220g1.model.entity.User;
 import com.example.no_exception_trello_c1220g1.service.board.IBoardService;
 import com.example.no_exception_trello_c1220g1.model.entity.BoardTagAppUser;
 import com.example.no_exception_trello_c1220g1.model.entity.GroupTagUser;
 import com.example.no_exception_trello_c1220g1.service.board.boardTagAppUser.IBoardTagAppUserService;
 import com.example.no_exception_trello_c1220g1.service.group.groupTagUser.IGroupTagUserService;
+import com.example.no_exception_trello_c1220g1.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 @CrossOrigin("*")
 @RestController
@@ -22,11 +26,12 @@ public class BoardController {
 
     @Autowired
     private IBoardService boardService;
-
     @Autowired
     private IGroupTagUserService groupTagUserService;
     @Autowired
     private IBoardTagAppUserService boardTagAppUserService;
+    @Autowired
+    private UserService userService;
 
 
 
@@ -36,8 +41,6 @@ public class BoardController {
     }
     @GetMapping("list-board-in-group/{id}")
     public ResponseEntity<Iterable<Board>> showListBoardInGroup(@PathVariable Long id){
-        //Todo dùng cái gì đây? sao 1 hàm 2 lần gọi service vậy? listBoard để làm gì đây?
-
         return new ResponseEntity<>(boardService.findBoardByGroupId(id),HttpStatus.OK);
     }
 //
@@ -54,8 +57,11 @@ public class BoardController {
             }
         }
 
+        String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userService.findByUsername(userName);
+
         BoardTagAppUser boardTagAppUser = BoardTagAppUser.builder()
-                .appUser(board.getUser())
+                .appUser(user)
                 .board(boardService.save(board))
                 .roleUser("ROLE_ADMIN")
                 .build();
@@ -66,6 +72,10 @@ public class BoardController {
 
     @GetMapping("findBoardById/{id}")
     public ResponseEntity<Board> findBoardById(@PathVariable Long id) {
-        return new ResponseEntity<>(boardService.findById(id).get(), HttpStatus.OK);
+        Optional<Board> board = boardService.findById(id);
+        if (!board.isPresent()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(board.get(), HttpStatus.OK);
     }
 }
