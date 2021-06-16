@@ -40,9 +40,10 @@ public class BoardController {
     public ResponseEntity<List<Board>> showAll() {
         return new ResponseEntity<>(boardService.findAll(), HttpStatus.OK);
     }
-    @GetMapping("listboardingroup/{id}")
+    @GetMapping("list-board-in-group/{id}")
     public ResponseEntity<Iterable<Board>> showListBoardInGroup(@PathVariable Long id){
-        Optional<Board> listBoard = boardService.findById(id);
+        //Todo dùng cái gì đây? sao 1 hàm 2 lần gọi service vậy? listBoard để làm gì đây?
+
         return new ResponseEntity<>(boardService.findBoardByGroupId(id),HttpStatus.OK);
     }
 //

@@ -18,7 +18,8 @@ public class UserDto {
     @NotBlank
     private String email;
     @Size(min = 6, max = 32)
-    private String passWord;
+    //Todo password chứ k phải passWord
+    private String password;
 //    private String newPassWord;
     private String phone;
 

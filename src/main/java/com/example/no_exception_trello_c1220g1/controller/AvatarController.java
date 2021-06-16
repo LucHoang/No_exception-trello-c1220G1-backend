@@ -16,6 +16,8 @@ public class AvatarController {
 
     @GetMapping("findByUserId/{id}")
     public ResponseEntity<String> findAvatarByUserId(@PathVariable Long id) {
+        //Todo check isPresent, trả về httpStatus.NOT_FOUND
+
         return new ResponseEntity<>(userService.findById(id).get().getAvatar(), HttpStatus.OK);
     }
 

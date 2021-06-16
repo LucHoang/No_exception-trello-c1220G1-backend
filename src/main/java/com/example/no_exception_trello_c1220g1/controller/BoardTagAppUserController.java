@@ -19,6 +19,7 @@ import com.example.no_exception_trello_c1220g1.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -29,12 +30,10 @@ import java.util.List;
 @RestController
 @RequestMapping("/boardTagUser")
 public class BoardTagAppUserController {
-    @Autowired
-    private IGroupTagUserService groupTagUserService;
+
     @Autowired
     private IBoardTagAppUserService boardTagAppUserService;
-    @Autowired
-    private JwtService jwtService;
+
     @Autowired
     private UserService userService;
     @Autowired
@@ -42,6 +41,7 @@ public class BoardTagAppUserController {
     @Autowired
     EmailService emailService;
 
+    //Todo Cho vào request, không cho email hay role lên pathVariable ntn.
     @GetMapping("add/{boardId}/{email}/{roleUser}")
     public ResponseEntity<?> add(@PathVariable Long boardId, @PathVariable String email, @PathVariable String roleUser, HttpServletRequest request){
         User userMail = userService.findByEmail(email);
@@ -51,9 +51,9 @@ public class BoardTagAppUserController {
         if (boardTagAppUserService.findByBoardIdAndUserId(boardId, userMail.getId()) != null) {
             return new ResponseEntity<>("User is already a member", HttpStatus.BAD_REQUEST);
         }
+        //Todo dùng SecurityContextHolder.getContext().getAuthentication() để lấy thông tin userName, Chỉ xử lí token ở bước filter đầu tiên;
 
-        String authHeader = request.getHeader("Authorization");
-        String userName = jwtService.getUserNameFromJwtToken(authHeader.replace("Bearer ", ""));
+        String userName = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userService.findByUsername(userName);
         BoardTagAppUser boardTagUserCheck = boardTagAppUserService.findByBoardIdAndUserId(boardId, user.getId());
 
@@ -73,19 +73,20 @@ public class BoardTagAppUserController {
     }
 //    @Autowired
 //    private BoardTagAppUserService boardTagAppUserService;
+    //Todo đặt lên endpoint không viết liền ntn. list-board-with-type
+    @GetMapping("list-board-with-type/")
+    public ResponseEntity<List<BoardDto>> getListByType(){
 
-    @GetMapping("listboardwithtype/")
-    public ResponseEntity<List<BoardDto>> getListByType( HttpServletRequest request){
-                String authHeader = request.getHeader("Authorization");
 
-
-        String username = jwtService.getUserNameFromJwtToken(authHeader.replace("Bearer ",""));
+        //Todo áp dụng Nguyên lý S trong SOLID 1 hàm chỉ làm 1 nhiệm vụ, không xử lí token ở đây,
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
         Long userId = userService.findByUsername(username).getId();
 
         List<BoardTagAppUser> boardTagAppUserList = boardTagAppUserService.findBoardByUserIdAndTypeBoardAndRoleUser(userId);
         List<BoardDto> boardDtoList = new ArrayList<>();
         for (BoardTagAppUser board:boardTagAppUserList
              ) {
+            //Todo không setFields Dto ở đây, đẩy xử lí trong service
             BoardDto boardDto = new BoardDto();
             boardDto.setType(board.getBoard().getType());
             boardDto.setGroupTrello(board.getBoard().getGroupTrello());

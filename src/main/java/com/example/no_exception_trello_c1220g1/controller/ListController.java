@@ -34,6 +34,8 @@ public class ListController {
     public ResponseEntity<?> findListByBoardId(@PathVariable Long id){
         return new ResponseEntity<>(listService.findListByBoardId(id),HttpStatus.OK);
     }
+
+
     @PostMapping("createList")
     public ResponseEntity<?> createList(@Valid @RequestBody ListTrello list, HttpServletRequest request, BindingResult bindingResult){
         if (bindingResult.hasFieldErrors()) {

@@ -36,7 +36,7 @@ public class GroupController {
         if (bindingResult.hasFieldErrors()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-
+        //Todo tương tự dùng SecurityContextHolder.getContext().getAuthentication() không xử lí token trong đây;
         String authHeader = request.getHeader("Authorization");
         String userName = jwtService.getUserNameFromJwtToken(authHeader.replace("Bearer ", ""));
         User user = userService.findByUsername(userName);
