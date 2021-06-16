@@ -19,6 +19,7 @@ import com.example.no_exception_trello_c1220g1.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -53,8 +54,9 @@ public class BoardTagAppUserController {
             return new ResponseEntity<>("User is already a member", HttpStatus.BAD_REQUEST);
         }
         //Todo dùng SecurityContextHolder.getContext().getAuthentication() để lấy thông tin userName, Chỉ xử lí token ở bước filter đầu tiên;
-        String authHeader = request.getHeader("Authorization");
-        String userName = jwtService.getUserNameFromJwtToken(authHeader.replace("Bearer ", ""));
+//        String authHeader = request.getHeader("Authorization");
+//        String userName = jwtService.getUserNameFromJwtToken(authHeader.replace("Bearer ", ""));
+        String userName = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userService.findByUsername(userName);
         BoardTagAppUser boardTagUserCheck = boardTagAppUserService.findByBoardIdAndUserId(boardId, user.getId());
 

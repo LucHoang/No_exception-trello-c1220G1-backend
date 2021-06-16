@@ -11,6 +11,7 @@ import com.example.no_exception_trello_c1220g1.service.user.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,8 +38,9 @@ public class GroupController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         //Todo tương tự dùng SecurityContextHolder.getContext().getAuthentication() không xử lí token trong đây;
-        String authHeader = request.getHeader("Authorization");
-        String userName = jwtService.getUserNameFromJwtToken(authHeader.replace("Bearer ", ""));
+//        String authHeader = request.getHeader("Authorization");
+//        String userName = jwtService.getUserNameFromJwtToken(authHeader.replace("Bearer ", ""));
+        String userName = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userService.findByUsername(userName);
 
         GroupTagUser groupTagUser = GroupTagUser.builder()

@@ -9,13 +9,13 @@ import javax.persistence.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Card_tagUser {
+public class CardTagLabels {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @OneToOne
     private Card card;
     @OneToOne
-    private User appUser;
+    private Labels labels;
 
 }
