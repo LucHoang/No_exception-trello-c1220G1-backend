@@ -1,5 +1,6 @@
 package com.example.no_exception_trello_c1220g1.service.listService;
 
+import com.example.no_exception_trello_c1220g1.model.dto.CardDto;
 import com.example.no_exception_trello_c1220g1.model.dto.ListResponse;
 import com.example.no_exception_trello_c1220g1.model.entity.Card;
 import com.example.no_exception_trello_c1220g1.model.entity.ListTrello;
@@ -65,12 +66,23 @@ public class ListService implements IListService{
         List<ListTrello> listTrellos = listRepository.findListByBoard_IdOrderByPosition(id);
         List<ListResponse> listResponses = new ArrayList<>();
         List<Card> cardList = new ArrayList<>();
+
         for (ListTrello listTrello:listTrellos
              ) {
+            List<CardDto> cardDtoList = new ArrayList<>();
             cardList = iCardService.findCardsByListId(listTrello.getId());
+            for (Card card: cardList
+                 ) {
+                CardDto cardDto = new CardDto(card.getId(),card.getTitle(),card.getContent(), card.getPosition());
+                cardDtoList.add(cardDto);
+            }
+            ListResponse listResponse = new ListResponse(listTrello.getId(),listTrello.getTitle(),listTrello.getPosition(),cardDtoList);
+            listResponses.add(listResponse);
+
         }
 
-        return null;
+
+        return listResponses;
     }
 
 
