@@ -9,7 +9,7 @@ import javax.persistence.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Card {
+public class Card extends Auditable<String>{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

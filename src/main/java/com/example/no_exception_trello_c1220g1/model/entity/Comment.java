@@ -10,7 +10,7 @@ import java.util.Date;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Comment {
+public class Comment extends Auditable<String>{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

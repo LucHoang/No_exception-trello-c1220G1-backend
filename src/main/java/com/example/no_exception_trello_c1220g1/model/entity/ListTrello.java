@@ -10,7 +10,7 @@ import javax.validation.constraints.NotBlank;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ListTrello {
+public class ListTrello extends Auditable<String>{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

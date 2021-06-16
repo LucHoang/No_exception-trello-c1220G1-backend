@@ -11,7 +11,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class BoardTagAppUser {
+public class BoardTagAppUser extends Auditable<String>{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
