@@ -59,7 +59,7 @@ public class CardController {
         if(boardTagAppUser== null){
             return new ResponseEntity<>("user invalid in group",HttpStatus.NOT_FOUND);
         }
-        if(boardTagAppUser.getRoleUser().equals("Role_View")){
+        if(boardTagAppUser.getRoleUser().equals("ROLE_VIEW")){
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
@@ -74,9 +74,6 @@ public class CardController {
     }
     @PostMapping("create")
     public ResponseEntity<?> createCard(@RequestBody Card card, HttpServletRequest request){
-        //Todo dùng Security
-//        String authHeader = request.getHeader("Authorization");
-//        String userName = jwtService.getUserNameFromJwtToken(authHeader.replace("Bearer ", ""));
         String userName = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userService.findByUsername(userName);
         BoardTagAppUser boardTagUserCheck = boardTagAppUserService.findByBoardIdAndUserId(card.getListTrello().getBoard().getId(), user.getId());

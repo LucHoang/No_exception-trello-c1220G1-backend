@@ -80,11 +80,13 @@ public class ListController {
     public ResponseEntity<?> changeTitleList(@RequestBody ListTrello list, @PathVariable Long id){
         User user = userService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         BoardTagAppUser boardTagAppUser = boardTagAppUserService.findByBoardIdAndUserId(id,user.getId());
+
         if(boardTagAppUser.getRoleUser().equals("ROLE_VIEW")){
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         return new ResponseEntity<>(listService.editTitleList(list, id),HttpStatus.OK);
     }
+
     @GetMapping("/{id}")
     private ResponseEntity<List<ListResponse>> getAllCardByBoardId(@PathVariable Long id){
         return new ResponseEntity<>(listService.findAllListByBoardId(id),HttpStatus.OK);

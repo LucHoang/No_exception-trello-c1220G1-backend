@@ -1,5 +1,7 @@
 package com.example.no_exception_trello_c1220g1.controller;
 
+import com.example.no_exception_trello_c1220g1.model.dto.BoardTagUserDto;
+import com.example.no_exception_trello_c1220g1.model.entity.Board;
 import com.example.no_exception_trello_c1220g1.model.entity.BoardTagAppUser;
 import com.example.no_exception_trello_c1220g1.model.dto.BoardDto;
 import com.example.no_exception_trello_c1220g1.model.entity.User;
@@ -11,11 +13,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @CrossOrigin("*")
 @RestController
@@ -33,30 +38,37 @@ public class BoardTagAppUserController {
     EmailService emailService;
 
     //Todo Cho vào request, không cho email hay role lên pathVariable ntn.
-    @GetMapping("add/{boardId}/{email}/{roleUser}")
-    public ResponseEntity<?> add(@PathVariable Long boardId, @PathVariable String email, @PathVariable String roleUser, HttpServletRequest request){
-        User userMail = userService.findByEmail(email);
+    @PostMapping("add")
+    public ResponseEntity<?> add(@Valid @RequestBody BoardTagUserDto boardTagUserDto, BindingResult bindingResult){
+        if (bindingResult.hasFieldErrors()) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        User userMail = userService.findByEmail(boardTagUserDto.getEmail());
         if (userMail == null) {
             return new ResponseEntity<>("Email does not exist!", HttpStatus.NOT_FOUND);
         }
-        if (boardTagAppUserService.findByBoardIdAndUserId(boardId, userMail.getId()) != null) {
+        if (boardTagAppUserService.findByBoardIdAndUserId(boardTagUserDto.getBoardId(), userMail.getId()) != null) {
             return new ResponseEntity<>("User is already a member", HttpStatus.BAD_REQUEST);
         }
-        //Todo dùng SecurityContextHolder.getContext().getAuthentication() để lấy thông tin userName, Chỉ xử lí token ở bước filter đầu tiên;
 //        String authHeader = request.getHeader("Authorization");
 //        String userName = jwtService.getUserNameFromJwtToken(authHeader.replace("Bearer ", ""));
         String userName = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userService.findByUsername(userName);
-        BoardTagAppUser boardTagUserCheck = boardTagAppUserService.findByBoardIdAndUserId(boardId, user.getId());
+        BoardTagAppUser boardTagUserCheck = boardTagAppUserService.findByBoardIdAndUserId(boardTagUserDto.getBoardId(), user.getId());
 
         if (!boardTagUserCheck.getRoleUser().equals("ROLE_ADMIN")) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
+        Optional<Board> board = boardService.findById(boardTagUserDto.getBoardId());
+        if (!board.isPresent()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
         BoardTagAppUser boardTagAppUser = BoardTagAppUser.builder()
                 .appUser(userMail)
-                .board(boardService.findById(boardId).get())
-                .roleUser(roleUser)
+                .board(board.get())
+                .roleUser(boardTagUserDto.getRoleUser())
                 .build();
 
 //        emailService.sendEmail(email);
