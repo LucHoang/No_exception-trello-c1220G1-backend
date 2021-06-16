@@ -63,8 +63,9 @@ public class ListController {
 //    ResponseEntity<List> findListById(@PathVariable Long id) {
 //        return new ResponseEntity<>(listService.findById(id), HttpStatus.OK);
 //    }
-//    @PutMapping("editTitleList/{id}")
-//    public ResponseEntity<?> changeTitleList(@RequestBody List list, @PathVariable Long id){
-//        return new ResponseEntity<>(listService.editTitleList(list, id),HttpStatus.OK);
-//    }
+    @PutMapping("editTitleList/{id}")
+    public ResponseEntity<?> changeTitleList(@RequestBody ListTrello list, @PathVariable Long id){
+
+        return new ResponseEntity<>(listService.editTitleList(list, id),HttpStatus.OK);
+    }
 }
