@@ -13,7 +13,7 @@ import javax.validation.constraints.Size;
 public class UserDto {
     @NotBlank
     @Pattern(regexp="^[a-zA-Z0-9][a-zA-Z0-9]{3,30}")
-    private String userName;
+    private String username;
 //    private MultipartFile avatarMul;
     private String avatar;
     @Email

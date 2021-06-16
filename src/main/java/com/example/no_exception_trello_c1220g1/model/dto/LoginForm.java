@@ -12,7 +12,7 @@ import javax.validation.constraints.Size;
 public class LoginForm {
     @NotBlank
     @Pattern(regexp="^[a-zA-Z0-9][a-zA-Z0-9]{3,30}")
-    private String userName;
+    private String username;
     @Size(min = 6, max = 32)
     private String password;
 }
