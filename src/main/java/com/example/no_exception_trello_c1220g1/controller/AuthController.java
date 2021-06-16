@@ -43,13 +43,13 @@ public class AuthController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginForm.getUserName(), loginForm.getPassword()));
+                new UsernamePasswordAuthenticationToken(loginForm.getUsername(), loginForm.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtService.generateTokenLogin(authentication);
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        User currentUser = userService.findByUsername(loginForm.getUserName());
+        User currentUser = userService.findByUsername(loginForm.getUsername());
         if(currentUser == null){
-            currentUser = userService.findByEmail(loginForm.getUserName());
+            currentUser = userService.findByEmail(loginForm.getUsername());
         }
 
         return ResponseEntity.ok(new JwtResponse(currentUser.getId(), userDetails.getUsername(), jwt, userDetails.getAuthorities()));
@@ -60,15 +60,15 @@ public class AuthController {
         if (bindingResult.hasFieldErrors()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        if (userService.checkUserNameEmail(userDto.getUserName(), userDto.getEmail()).equals("nameExist")) {
+        if (userService.checkUserNameEmail(userDto.getUsername(), userDto.getEmail()).equals("nameExist")) {
             return new ResponseEntity<>("Username already exists", HttpStatus.BAD_REQUEST);
         }
-        if (userService.checkUserNameEmail(userDto.getUserName(), userDto.getEmail()).equals("mailExist")) {
+        if (userService.checkUserNameEmail(userDto.getUsername(), userDto.getEmail()).equals("mailExist")) {
             return new ResponseEntity<>("Email already exists", HttpStatus.BAD_REQUEST);
         }
 
         User user = User.builder()
-                .userName(userDto.getUserName())
+                .userName(userDto.getUsername())
                 .passWord(userDto.getPassword())
                 .email(userDto.getEmail())
                 .phone(userDto.getPhone())
