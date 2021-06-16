@@ -1,5 +1,6 @@
 package com.example.no_exception_trello_c1220g1.controller;
 
+import com.example.no_exception_trello_c1220g1.model.dto.ListResponse;
 import com.example.no_exception_trello_c1220g1.model.entity.BoardTagAppUser;
 import com.example.no_exception_trello_c1220g1.model.entity.ListTrello;
 import com.example.no_exception_trello_c1220g1.model.entity.User;
@@ -18,9 +19,10 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.ArrayList;
+import java.util.List;
 
 @Controller
-@RequestMapping("")
+@RequestMapping("/list")
 @CrossOrigin("*")
 public class ListController {
     @Autowired
@@ -78,5 +80,9 @@ public class ListController {
     public ResponseEntity<?> changeTitleList(@RequestBody ListTrello list, @PathVariable Long id){
 
         return new ResponseEntity<>(listService.editTitleList(list, id),HttpStatus.OK);
+    }
+    @GetMapping("/{id}")
+    private ResponseEntity<List<ListResponse>> getAllCardByBoardId(@PathVariable Long id){
+        return new ResponseEntity<>(listService.findAllListByBoardId(id),HttpStatus.OK);
     }
 }
