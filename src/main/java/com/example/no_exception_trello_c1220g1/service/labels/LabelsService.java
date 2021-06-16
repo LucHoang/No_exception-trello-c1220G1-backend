@@ -1,10 +1,8 @@
 package com.example.no_exception_trello_c1220g1.service.labels;
 
-import com.example.no_exception_trello_c1220g1.model.Entity.Labels;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.no_exception_trello_c1220g1.model.entity.Labels;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 

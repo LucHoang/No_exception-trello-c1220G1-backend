@@ -1,20 +1,11 @@
 package com.example.no_exception_trello_c1220g1.controller;
 
-import com.example.no_exception_trello_c1220g1.model.Entity.BoardTagAppUser;
+import com.example.no_exception_trello_c1220g1.model.entity.BoardTagAppUser;
 import com.example.no_exception_trello_c1220g1.model.dto.BoardDto;
-import com.example.no_exception_trello_c1220g1.service.board.boardTagAppUser.BoardTagAppUserService;
-import com.example.no_exception_trello_c1220g1.service.token.JwtService;
-import com.example.no_exception_trello_c1220g1.service.user.IUserService;
-import com.example.no_exception_trello_c1220g1.model.Entity.BoardTagAppUser;
-import com.example.no_exception_trello_c1220g1.model.Entity.GroupTagUser;
-import com.example.no_exception_trello_c1220g1.model.Entity.User;
+import com.example.no_exception_trello_c1220g1.model.entity.User;
 import com.example.no_exception_trello_c1220g1.service.EmailService;
 import com.example.no_exception_trello_c1220g1.service.board.IBoardService;
 import com.example.no_exception_trello_c1220g1.service.board.boardTagAppUser.IBoardTagAppUserService;
-import com.example.no_exception_trello_c1220g1.service.group.GroupService;
-import com.example.no_exception_trello_c1220g1.service.group.IGroupService;
-import com.example.no_exception_trello_c1220g1.service.group.groupTagUser.IGroupTagUserService;
-import com.example.no_exception_trello_c1220g1.service.token.JwtService;
 import com.example.no_exception_trello_c1220g1.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -52,7 +43,8 @@ public class BoardTagAppUserController {
             return new ResponseEntity<>("User is already a member", HttpStatus.BAD_REQUEST);
         }
         //Todo dùng SecurityContextHolder.getContext().getAuthentication() để lấy thông tin userName, Chỉ xử lí token ở bước filter đầu tiên;
-
+//        String authHeader = request.getHeader("Authorization");
+//        String userName = jwtService.getUserNameFromJwtToken(authHeader.replace("Bearer ", ""));
         String userName = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userService.findByUsername(userName);
         BoardTagAppUser boardTagUserCheck = boardTagAppUserService.findByBoardIdAndUserId(boardId, user.getId());

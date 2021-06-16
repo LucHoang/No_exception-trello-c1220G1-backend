@@ -1,8 +1,8 @@
 package com.example.no_exception_trello_c1220g1.service.user;
 
-import com.example.no_exception_trello_c1220g1.model.Entity.Role;
+import com.example.no_exception_trello_c1220g1.model.entity.Role;
 
-import com.example.no_exception_trello_c1220g1.model.Entity.User;
+import com.example.no_exception_trello_c1220g1.model.entity.User;
 import com.example.no_exception_trello_c1220g1.model.dto.UserPrinciple;
 import com.example.no_exception_trello_c1220g1.repository.IUserRepository;
 import lombok.AllArgsConstructor;
@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -60,6 +61,7 @@ public class UserService implements IUserService {
     }
 
     @Override
+//    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public User findByUsername(String username) {
         return userRepository.findByUserName(username);
     }
@@ -80,12 +82,11 @@ public class UserService implements IUserService {
 
         if (user1==null && user2==null) {
             return "OK";
-        } else if (user1 != null && user2 == null) {
+        } else if (user1 != null) {
             return "nameExist";
-        } else if (user1 == null) {
+        } else {
             return "mailExist";
         }
-        return "nameEmailExist";
     }
 
     @Override

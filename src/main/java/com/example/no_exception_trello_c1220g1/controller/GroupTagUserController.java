@@ -1,7 +1,7 @@
 package com.example.no_exception_trello_c1220g1.controller;
 
-import com.example.no_exception_trello_c1220g1.model.Entity.GroupTagUser;
-import com.example.no_exception_trello_c1220g1.model.Entity.User;
+import com.example.no_exception_trello_c1220g1.model.entity.GroupTagUser;
+import com.example.no_exception_trello_c1220g1.model.entity.User;
 import com.example.no_exception_trello_c1220g1.service.EmailService;
 import com.example.no_exception_trello_c1220g1.service.group.GroupService;
 import com.example.no_exception_trello_c1220g1.service.group.groupTagUser.IGroupTagUserService;
@@ -13,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 
 @CrossOrigin("*")
 @RestController

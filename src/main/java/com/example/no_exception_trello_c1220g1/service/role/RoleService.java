@@ -1,6 +1,6 @@
 package com.example.no_exception_trello_c1220g1.service.role;
 
-import com.example.no_exception_trello_c1220g1.model.Entity.Role;
+import com.example.no_exception_trello_c1220g1.model.entity.Role;
 import com.example.no_exception_trello_c1220g1.repository.IRoleRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;

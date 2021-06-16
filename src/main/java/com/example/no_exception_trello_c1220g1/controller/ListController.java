@@ -1,8 +1,8 @@
 package com.example.no_exception_trello_c1220g1.controller;
 
-import com.example.no_exception_trello_c1220g1.model.Entity.BoardTagAppUser;
-import com.example.no_exception_trello_c1220g1.model.Entity.ListTrello;
-import com.example.no_exception_trello_c1220g1.model.Entity.User;
+import com.example.no_exception_trello_c1220g1.model.entity.BoardTagAppUser;
+import com.example.no_exception_trello_c1220g1.model.entity.ListTrello;
+import com.example.no_exception_trello_c1220g1.model.entity.User;
 import com.example.no_exception_trello_c1220g1.service.board.boardTagAppUser.IBoardTagAppUserService;
 import com.example.no_exception_trello_c1220g1.service.listService.IListService;
 import com.example.no_exception_trello_c1220g1.service.token.JwtService;

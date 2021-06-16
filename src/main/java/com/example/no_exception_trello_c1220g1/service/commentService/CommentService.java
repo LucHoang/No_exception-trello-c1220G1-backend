@@ -1,7 +1,6 @@
 package com.example.no_exception_trello_c1220g1.service.commentService;
 
-import com.example.no_exception_trello_c1220g1.model.Entity.Comment;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.no_exception_trello_c1220g1.model.entity.Comment;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

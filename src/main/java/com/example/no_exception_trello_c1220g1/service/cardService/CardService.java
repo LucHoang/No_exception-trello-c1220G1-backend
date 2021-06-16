@@ -1,11 +1,9 @@
 package com.example.no_exception_trello_c1220g1.service.cardService;
 
-import com.example.no_exception_trello_c1220g1.model.Entity.Card;
+import com.example.no_exception_trello_c1220g1.model.entity.Card;
 import com.example.no_exception_trello_c1220g1.repository.ICardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;

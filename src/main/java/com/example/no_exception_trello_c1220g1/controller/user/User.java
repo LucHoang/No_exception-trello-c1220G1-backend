@@ -1,4 +1,4 @@
-package com.example.no_exception_trello_c1220g1.controller.User;
+package com.example.no_exception_trello_c1220g1.controller.user;
 
 import com.example.no_exception_trello_c1220g1.service.token.JwtService;
 import lombok.AllArgsConstructor;

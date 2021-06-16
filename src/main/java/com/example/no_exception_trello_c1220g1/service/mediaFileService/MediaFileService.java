@@ -1,7 +1,6 @@
 package com.example.no_exception_trello_c1220g1.service.mediaFileService;
 
-import com.example.no_exception_trello_c1220g1.model.Entity.MediaFile;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.no_exception_trello_c1220g1.model.entity.MediaFile;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

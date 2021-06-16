@@ -1,6 +1,6 @@
 package com.example.no_exception_trello_c1220g1.service.group;
 
-import com.example.no_exception_trello_c1220g1.model.Entity.GroupTrello;
+import com.example.no_exception_trello_c1220g1.model.entity.GroupTrello;
 import com.example.no_exception_trello_c1220g1.repository.IGroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

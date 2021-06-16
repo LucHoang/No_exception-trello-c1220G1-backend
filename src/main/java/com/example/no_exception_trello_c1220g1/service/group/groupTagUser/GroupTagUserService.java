@@ -1,10 +1,6 @@
 package com.example.no_exception_trello_c1220g1.service.group.groupTagUser;
 
-import com.example.no_exception_trello_c1220g1.model.Entity.GroupTagUser;
-import com.example.no_exception_trello_c1220g1.model.Entity.User;
-import com.example.no_exception_trello_c1220g1.repository.IGroupTagUserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import com.example.no_exception_trello_c1220g1.model.entity.GroupTagUser;
 import com.example.no_exception_trello_c1220g1.repository.IGroupTagUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -1,6 +1,6 @@
 package com.example.no_exception_trello_c1220g1.service.listService;
 
-import com.example.no_exception_trello_c1220g1.model.Entity.ListTrello;
+import com.example.no_exception_trello_c1220g1.model.entity.ListTrello;
 import com.example.no_exception_trello_c1220g1.repository.IListRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

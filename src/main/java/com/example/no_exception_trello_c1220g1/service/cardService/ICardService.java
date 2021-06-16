@@ -1,6 +1,6 @@
 package com.example.no_exception_trello_c1220g1.service.cardService;
 
-import com.example.no_exception_trello_c1220g1.model.Entity.Card;
+import com.example.no_exception_trello_c1220g1.model.entity.Card;
 import com.example.no_exception_trello_c1220g1.service.IGeneralService;
 
 import java.util.List;

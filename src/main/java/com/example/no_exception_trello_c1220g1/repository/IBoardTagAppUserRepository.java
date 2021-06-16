@@ -1,7 +1,6 @@
 package com.example.no_exception_trello_c1220g1.repository;
 
-import com.example.no_exception_trello_c1220g1.model.Entity.BoardTagAppUser;
-import com.example.no_exception_trello_c1220g1.model.Entity.GroupTagUser;
+import com.example.no_exception_trello_c1220g1.model.entity.BoardTagAppUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
