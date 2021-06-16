@@ -11,6 +11,7 @@ import com.example.no_exception_trello_c1220g1.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -69,7 +70,11 @@ public class ListController {
 //    }
     @PutMapping("editTitleList/{id}")
     public ResponseEntity<?> changeTitleList(@RequestBody ListTrello list, @PathVariable Long id){
-
+        User user = userService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        BoardTagAppUser boardTagAppUser = boardTagAppUserService.findByBoardIdAndUserId(id,user.getId());
+        if(boardTagAppUser.getRoleUser().equals("ROLE_VIEW")){
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
         return new ResponseEntity<>(listService.editTitleList(list, id),HttpStatus.OK);
     }
     @GetMapping("/{id}")

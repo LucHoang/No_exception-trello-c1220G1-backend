@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 
 @CrossOrigin("*")
 @RestController
-@RequestMapping("/groupTagUser")
+@RequestMapping("/group-tag-user")
 public class GroupTagUserController {
     @Autowired
     IGroupTagUserService groupTagUserService;
@@ -59,7 +59,7 @@ public class GroupTagUserController {
          return new ResponseEntity<>(groupTagUserService.save(groupTagUser), HttpStatus.OK);
      }
 
-    @GetMapping("/listgroup/{id}")
+    @GetMapping("/list-group/{id}")
     public ResponseEntity<Iterable<GroupTagUser>> findAllByUserId(@PathVariable Long id, HttpServletRequest request){
 
 

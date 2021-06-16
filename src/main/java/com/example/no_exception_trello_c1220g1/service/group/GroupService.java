@@ -2,6 +2,7 @@ package com.example.no_exception_trello_c1220g1.service.group;
 
 import com.example.no_exception_trello_c1220g1.model.entity.GroupTrello;
 import com.example.no_exception_trello_c1220g1.repository.IGroupRepository;
+import com.example.no_exception_trello_c1220g1.service.user.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +13,8 @@ import java.util.Optional;
 public class GroupService implements IGroupService{
     @Autowired
     IGroupRepository groupRepository;
+    @Autowired
+    IUserService iUserService;
 
     @Override
     public List<GroupTrello> findAll() {

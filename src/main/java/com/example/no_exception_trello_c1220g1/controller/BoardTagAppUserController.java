@@ -71,8 +71,8 @@ public class BoardTagAppUserController {
 
 
         //Todo áp dụng Nguyên lý S trong SOLID 1 hàm chỉ làm 1 nhiệm vụ, không xử lí token ở đây,
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        Long userId = userService.findByUsername(username).getId();
+
+        Long userId = userService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).getId();
 
         List<BoardTagAppUser> boardTagAppUserList = boardTagAppUserService.findBoardByUserIdAndTypeBoardAndRoleUser(userId);
         List<BoardDto> boardDtoList = new ArrayList<>();
