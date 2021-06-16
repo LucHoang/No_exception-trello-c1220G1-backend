@@ -51,18 +51,26 @@ public class CardController {
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }
-//    @PutMapping("edit/{id}")
-//    public ResponseEntity<?> editCard(@PathVariable Long id, @RequestBody CardDto cardDto){
-//        User user = userService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-//
-//        cardDto.setId(id);
-//        cardService.save(cardDto);
-//        return new ResponseEntity<>(HttpStatus.OK);
-//    }
-//    @GetMapping("/{id}")
-//    public ResponseEntity<Card> findCardById(@PathVariable Long id){
-//        return new ResponseEntity<>(cardService.findById(id), HttpStatus.OK);
-//    }
+    @PutMapping("edit/{boardId}/{id}")
+    public ResponseEntity<?> editCard(@PathVariable Long boardId,@PathVariable Long id, @RequestBody CardDto cardDto){
+        User user = userService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        BoardTagAppUser boardTagAppUser = boardTagAppUserService.findByBoardIdAndUserId(boardId, user.getId());
+        if(boardTagAppUser== null){
+            return new ResponseEntity<>("user invalid in group",HttpStatus.NOT_FOUND);
+        }
+        if(boardTagAppUser.getRoleUser().equals("Role_View")){
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+
+        return new ResponseEntity<>(cardService.editCard(cardDto),HttpStatus.OK);
+    }
+    @GetMapping("/{id}")
+    public ResponseEntity<Card> findCardById(@PathVariable Long id){
+        if (!cardService.findById(id).isPresent()){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(cardService.findById(id).get(), HttpStatus.OK);
+    }
     @PostMapping("create")
     public ResponseEntity<?> createCard(@RequestBody Card card, HttpServletRequest request){
         //Todo dùng Security
