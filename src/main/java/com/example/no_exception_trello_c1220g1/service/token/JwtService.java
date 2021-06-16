@@ -36,8 +36,7 @@ public class JwtService implements ITokenService{
             Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(authToken);
             return true;
         } catch (SignatureException e) {
-            //Todo mọi người có hiểu ở đây nó warning gì không?
-            logger.error("Invalid JWT signature -> Message: {} ", e);
+            logger.error("Invalid JWT signature -> Message: {} ", e.toString());
         } catch (MalformedJwtException e) {
             logger.error("Invalid JWT token -> Message: {}", e);
         } catch (ExpiredJwtException e) {

@@ -5,6 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-//Todo Thống nhất lại cách đặt tên, k dùng kiểu snake case
 public interface ICardTagUserRepository extends JpaRepository<CardTagUser,Long> {
 }

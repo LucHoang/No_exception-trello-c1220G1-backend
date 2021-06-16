@@ -37,7 +37,6 @@ public class AuthController {
     private IUserService userService;
 
     @PostMapping("/login")
-    //Todo validate RequestBody, tạo class LoginReq
     public ResponseEntity<?> login(@RequestBody LoginForm loginForm,BindingResult bindingResult) {
         if (bindingResult.hasFieldErrors()){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

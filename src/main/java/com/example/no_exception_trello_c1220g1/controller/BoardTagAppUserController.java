@@ -37,7 +37,6 @@ public class BoardTagAppUserController {
     @Autowired
     EmailService emailService;
 
-    //Todo Cho vào request, không cho email hay role lên pathVariable ntn.
     @PostMapping("add")
     public ResponseEntity<?> add(@Valid @RequestBody BoardTagUserDto boardTagUserDto, BindingResult bindingResult){
         if (bindingResult.hasFieldErrors()) {
@@ -77,12 +76,10 @@ public class BoardTagAppUserController {
     }
 //    @Autowired
 //    private BoardTagAppUserService boardTagAppUserService;
-    //Todo đặt lên endpoint không viết liền ntn. list-board-with-type
     @GetMapping("list-board-with-type/")
     public ResponseEntity<List<BoardDto>> getListByType(){
 
 
-        //Todo áp dụng Nguyên lý S trong SOLID 1 hàm chỉ làm 1 nhiệm vụ, không xử lí token ở đây,
 
         Long userId = userService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).getId();
 
@@ -90,7 +87,6 @@ public class BoardTagAppUserController {
         List<BoardDto> boardDtoList = new ArrayList<>();
         for (BoardTagAppUser board:boardTagAppUserList
              ) {
-            //Todo không setFields Dto ở đây, đẩy xử lí trong service
             BoardDto boardDto = new BoardDto();
             boardDto.setType(board.getBoard().getType());
             boardDto.setGroupTrello(board.getBoard().getGroupTrello());
