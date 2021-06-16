@@ -26,49 +26,16 @@ public class CardService implements ICardService {
     public void delete(Long id) {
 
     }
-//    @Autowired
-//    private CardRepo cardRepo;
-//
-//    @Override
-//    public List<Card> findAll() {
-//        return null;
-//    }
-//
-//    @Override
-//    public Card findById(Long id) {
-//        return cardRepo.findById(id).get();
-//    }
-//
+
     @Override
     public Card save(Card card) {
         return cardRepository.save(card);
     }
-//
-//    @Override
-//    @Transactional(propagation = Propagation.REQUIRES_NEW)
-//    public void delete(Long id) {
-//        cardRepo.deleteById(id);
-//    }
-//
+
     @Override
     public List<Card> findCardsByListId(Long id) {
         List<Card> cardList = cardRepository.findCardsByListTrello_IdOrderByPosition(id);
         return cardList;
     }
-//
-//    @Override
-//
-//    public List<Card> findCardsByBroadIdAndUserId(Long broadId, Long userId) {
-//        return cardRepo.findCardByUserIdAndBroadId(broadId, userId);
-//    }
-//
-//    @Override
-//    public List<Card> findAllCard() {
-//        return cardRepo.findAllCard();
-//    }
-//
-//    @Override
-//    public List<Card> findCardByLabel(Long label_id, Long board_id) {
-//        return cardRepo.findCardsByLabel(label_id, board_id);
-//    }
+
 }

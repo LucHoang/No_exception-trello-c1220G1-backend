@@ -1,5 +1,6 @@
 package com.example.no_exception_trello_c1220g1.controller;
 
+import com.example.no_exception_trello_c1220g1.model.dto.LoginForm;
 import com.example.no_exception_trello_c1220g1.model.entity.User;
 import com.example.no_exception_trello_c1220g1.model.dto.JwtResponse;
 import com.example.no_exception_trello_c1220g1.service.token.JwtService;
@@ -37,15 +38,18 @@ public class AuthController {
 
     @PostMapping("/login")
     //Todo validate RequestBody, tạo class LoginReq
-    public ResponseEntity<?> login(@RequestBody User user) {
+    public ResponseEntity<?> login(@RequestBody LoginForm loginForm,BindingResult bindingResult) {
+        if (bindingResult.hasFieldErrors()){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(user.getUserName(), user.getPassWord()));
+                new UsernamePasswordAuthenticationToken(loginForm.getUserName(), loginForm.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtService.generateTokenLogin(authentication);
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        User currentUser = userService.findByUsername(user.getUserName());
+        User currentUser = userService.findByUsername(loginForm.getUserName());
         if(currentUser == null){
-            currentUser = userService.findByEmail(user.getUserName());
+            currentUser = userService.findByEmail(loginForm.getUserName());
         }
 
         return ResponseEntity.ok(new JwtResponse(currentUser.getId(), userDetails.getUsername(), jwt, userDetails.getAuthorities()));
