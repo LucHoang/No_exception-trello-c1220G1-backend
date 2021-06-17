@@ -78,4 +78,12 @@ public class BoardController {
         }
         return new ResponseEntity<>(board.get(), HttpStatus.OK);
     }
+
+    @GetMapping("showAllBoardPrivate")
+    public ResponseEntity<List<Board>> showAllBoardTagUser() {
+        String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userService.findByUsername(userName);
+
+        return new ResponseEntity<>(boardService.findBoardByType(user.getId(), "TYPE_PRIVATE"), HttpStatus.OK);
+    }
 }
