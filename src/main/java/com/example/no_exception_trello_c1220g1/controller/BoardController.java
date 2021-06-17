@@ -16,6 +16,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -80,10 +81,24 @@ public class BoardController {
     }
 
     @GetMapping("showAllBoardPrivate")
-    public ResponseEntity<List<Board>> showAllBoardTagUser() {
+    public ResponseEntity<List<Board>> showAllBoardPrivate() {
         String userName = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userService.findByUsername(userName);
 
         return new ResponseEntity<>(boardService.findBoardByType(user.getId(), "TYPE_PRIVATE"), HttpStatus.OK);
+    }
+
+    @GetMapping("showAllBoardGroup")
+    public ResponseEntity<List<Board>> showAllBoardGroup() {
+        String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userService.findByUsername(userName);
+
+        List<BoardTagAppUser> boardTagAppUsers = boardTagAppUserService.findBoardByUserIdAndBoardType(user.getId(), "TYPE_GROUP");
+        List<Board> boards = new ArrayList<>();
+        for (BoardTagAppUser boardTagAppUser: boardTagAppUsers) {
+            boards.add(boardTagAppUser.getBoard());
+        }
+
+        return new ResponseEntity<>(boards, HttpStatus.OK);
     }
 }
