@@ -101,4 +101,18 @@ public class BoardController {
 
         return new ResponseEntity<>(boards, HttpStatus.OK);
     }
+
+    @GetMapping("showAllBoardPublic")
+    public ResponseEntity<List<Board>> showAllBoardPublic() {
+        String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userService.findByUsername(userName);
+
+        List<BoardTagAppUser> boardTagAppUsers = boardTagAppUserService.findBoardByUserIdAndBoardType(user.getId(), "TYPE_PUBLIC");
+        List<Board> boards = new ArrayList<>();
+        for (BoardTagAppUser boardTagAppUser: boardTagAppUsers) {
+            boards.add(boardTagAppUser.getBoard());
+        }
+
+        return new ResponseEntity<>(boards, HttpStatus.OK);
+    }
 }
