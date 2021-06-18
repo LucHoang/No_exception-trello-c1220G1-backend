@@ -2,9 +2,11 @@ package com.example.no_exception_trello_c1220g1.controller;
 
 import com.example.no_exception_trello_c1220g1.model.dto.ListResponse;
 import com.example.no_exception_trello_c1220g1.model.entity.BoardTagAppUser;
+import com.example.no_exception_trello_c1220g1.model.entity.GroupTagUser;
 import com.example.no_exception_trello_c1220g1.model.entity.ListTrello;
 import com.example.no_exception_trello_c1220g1.model.entity.User;
 import com.example.no_exception_trello_c1220g1.service.board.boardTagAppUser.IBoardTagAppUserService;
+import com.example.no_exception_trello_c1220g1.service.group.groupTagUser.IGroupTagUserService;
 import com.example.no_exception_trello_c1220g1.service.listService.IListService;
 import com.example.no_exception_trello_c1220g1.service.token.JwtService;
 import com.example.no_exception_trello_c1220g1.service.user.UserService;
@@ -33,6 +35,8 @@ public class ListController {
     private UserService userService;
     @Autowired
     private IBoardTagAppUserService boardTagAppUserService;
+    @Autowired
+    private IGroupTagUserService groupTagUserService;
     @GetMapping("/board/{id}")
     public ResponseEntity<?> findListByBoardId(@PathVariable Long id){
         return new ResponseEntity<>(listService.findListByBoardId(id),HttpStatus.OK);
@@ -44,15 +48,31 @@ public class ListController {
         if (bindingResult.hasFieldErrors()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-//        String authHeader = request.getHeader("Authorization");
-//        String userName = jwtService.getUserNameFromJwtToken(authHeader.replace("Bearer ", ""));
         String userName = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userService.findByUsername(userName);
-        BoardTagAppUser boardTagUserCheck = boardTagAppUserService.findByBoardIdAndUserId(list.getBoard().getId(), user.getId());
 
-        if (boardTagUserCheck.getRoleUser().equals("ROLE_VIEW")) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        BoardTagAppUser boardTagUserCheck = boardTagAppUserService.findByBoardIdAndUserId(list.getBoard().getId(), user.getId());
+        if (list.getBoard().getGroupTrello() == null || list.getBoard().getType().equalsIgnoreCase("TYPE_PRIVATE")) {
+            if (boardTagUserCheck == null || (!boardTagUserCheck.getRoleUser().equals("ROLE_ADMIN") && !boardTagUserCheck.getRoleUser().equals("ROLE_EDIT"))) {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
+        } else {
+            if (boardTagUserCheck == null) {
+                GroupTagUser groupTagUserCheck = groupTagUserService.findByGroupIdAndUserId(list.getBoard().getGroupTrello().getId(), list.getBoard().getUser().getId());
+                if (groupTagUserCheck == null || (!groupTagUserCheck.getRoleUser().equals("ROLE_ADMIN") && !groupTagUserCheck.getRoleUser().equals("ROLE_EDIT"))) {
+                    return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+                }
+            } else {
+                if (!boardTagUserCheck.getRoleUser().equals("ROLE_ADMIN") && !boardTagUserCheck.getRoleUser().equals("ROLE_EDIT")) {
+                    return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+                }
+            }
         }
+
+//        BoardTagAppUser boardTagUserCheck = boardTagAppUserService.findByBoardIdAndUserId(list.getBoard().getId(), user.getId());
+//
+//        if (!boardTagUserCheck.getRoleUser().equals("ROLE_ADMIN") && !boardTagUserCheck.getRoleUser().equals("ROLE_EDIT")) {
+//            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 
         int position = listService.findListByBoardId(list.getBoard().getId()).size();
         list.setPosition(position);
