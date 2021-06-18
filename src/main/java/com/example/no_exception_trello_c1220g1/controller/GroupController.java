@@ -49,4 +49,18 @@ public class GroupController {
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
+    @PutMapping("/edit")
+    public ResponseEntity<?> editGroup(@RequestBody GroupTrello groupTrello,BindingResult bindingResult){
+        if(bindingResult.hasFieldErrors()){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userService.findByUsername(userName);
+        GroupTagUser groupTagUser = groupTagUserService.findByGroupIdAndUserId(user.getId(),groupTrello.getId());
+        if(!groupTagUser.getRoleUser().equals("ROLE_ADMIN")){
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+        groupService.save(groupTrello);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }
