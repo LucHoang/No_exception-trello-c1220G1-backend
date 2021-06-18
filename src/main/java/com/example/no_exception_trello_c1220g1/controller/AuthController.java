@@ -37,7 +37,6 @@ public class AuthController {
     private IUserService userService;
 
     @PostMapping("/login")
-    //Todo validate RequestBody, tạo class LoginReq
     public ResponseEntity<?> login(@RequestBody LoginForm loginForm,BindingResult bindingResult) {
         if (bindingResult.hasFieldErrors()){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -61,10 +60,10 @@ public class AuthController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         if (userService.checkUserNameEmail(userDto.getUsername(), userDto.getEmail()).equals("nameExist")) {
-            return new ResponseEntity<>("Username already exists", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("username", HttpStatus.BAD_REQUEST);
         }
         if (userService.checkUserNameEmail(userDto.getUsername(), userDto.getEmail()).equals("mailExist")) {
-            return new ResponseEntity<>("Email already exists", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("email", HttpStatus.BAD_REQUEST);
         }
 
         User user = User.builder()
