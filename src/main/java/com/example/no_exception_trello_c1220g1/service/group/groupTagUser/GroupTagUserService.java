@@ -46,6 +46,10 @@ public class GroupTagUserService implements IGroupTagUserService{
         return groupTagUserRepository.findAllByUserIdAndType(type,id);
     }
 
+    @Override
+    public void deleteUserFromGroup(Long userId, Long groupId) {
+        groupTagUserRepository.deleteByUserId(userId,groupId);
+    }
 
 
 }

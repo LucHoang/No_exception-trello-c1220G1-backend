@@ -80,5 +80,18 @@ public class GroupTagUserController {
     public ResponseEntity<Iterable<GroupTagUser>> findAllByUserIdAndType(@PathVariable Long id,@PathVariable String type){
         return new ResponseEntity<>(groupTagUserService.findAllByUserIdAndType(id,type),HttpStatus.OK);
     }
+    @DeleteMapping("/delete-user/{groupId}/{userId}")
+    public ResponseEntity<?> deleteUser(@PathVariable Long groupId,@PathVariable Long userId){
+        GroupTagUser groupTagUser = groupTagUserService.findByGroupIdAndUserId(groupId,userService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).getId());
+        if(!groupTagUser.getRoleUser().equals("ROLE_ADMIN")){
+            return new ResponseEntity<>("User has not authorities",HttpStatus.FORBIDDEN);
+        }
+        User user = groupTagUserService.findById(groupId).get().getUser();
+        if(user== null){
+            return new ResponseEntity<>("User not in Group",HttpStatus.NOT_FOUND);
+        }
+        groupTagUserService.deleteUserFromGroup(userId,groupId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
 }
