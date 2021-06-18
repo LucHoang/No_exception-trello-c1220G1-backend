@@ -41,10 +41,7 @@ public class CardService implements ICardService {
 
     @Override
     public Card editCard(CardDto cardDto) {
-        Card card = new Card();
-        card.setPosition(cardDto.getPosition());
-        card.setId(cardDto.getId());
-        card.setContent(cardDto.getContent());
+        Card card = cardRepository.findById(cardDto.getId()).get();
         card.setTitle(cardDto.getTitle());
         card.setListTrello(cardRepository.findById(cardDto.getId()).get().getListTrello());
 
