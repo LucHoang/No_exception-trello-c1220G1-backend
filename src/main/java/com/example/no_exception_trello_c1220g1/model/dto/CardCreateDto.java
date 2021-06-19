@@ -9,5 +9,6 @@ public class CardCreateDto {
     private Long cardId;
     private String title;
     private String content;
+    private int position;
     private Long listTrelloId;
 }

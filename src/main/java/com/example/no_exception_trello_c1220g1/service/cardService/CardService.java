@@ -1,11 +1,13 @@
 package com.example.no_exception_trello_c1220g1.service.cardService;
 
 import com.example.no_exception_trello_c1220g1.model.dto.CardDto;
-import com.example.no_exception_trello_c1220g1.model.entity.Card;
-import com.example.no_exception_trello_c1220g1.model.entity.CardTagLabels;
+import com.example.no_exception_trello_c1220g1.model.dto.UserPrinciple;
+import com.example.no_exception_trello_c1220g1.model.entity.*;
 import com.example.no_exception_trello_c1220g1.repository.ICardRepository;
 import com.example.no_exception_trello_c1220g1.repository.ICardTagLabelsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -65,6 +67,28 @@ public class CardService implements ICardService {
         card.setListTrello(cardRepository.findById(cardDto.getId()).get().getListTrello());
 
         return cardRepository.save(card);
+    }
+
+    @Override
+    public boolean checkRole (UserPrinciple userPrinciple, Optional<ListTrello> listTrello) {
+        BoardTagAppUser boardTagUserCheck = (BoardTagAppUser) userPrinciple.getAllRole().get(listTrello.get().getBoard().getId()+"btu");
+        GroupTagUser groupTagUserCheck = (GroupTagUser) userPrinciple.getAllRole().get(listTrello.get().getBoard().getGroupTrello().getId()+"gtu");
+        if (listTrello.get().getBoard().getGroupTrello() == null || listTrello.get().getBoard().getType().equalsIgnoreCase("TYPE_PRIVATE")) {
+            if (boardTagUserCheck == null || (!boardTagUserCheck.getRoleUser().equals("ROLE_ADMIN") && !boardTagUserCheck.getRoleUser().equals("ROLE_EDIT"))) {
+                return false;
+            }
+        } else {
+            if (boardTagUserCheck == null) {
+                if (groupTagUserCheck == null || (!groupTagUserCheck.getRoleUser().equals("ROLE_ADMIN") && !groupTagUserCheck.getRoleUser().equals("ROLE_EDIT"))) {
+                    return false;
+                }
+            } else {
+                if (!boardTagUserCheck.getRoleUser().equals("ROLE_ADMIN") && !boardTagUserCheck.getRoleUser().equals("ROLE_EDIT")) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
 }

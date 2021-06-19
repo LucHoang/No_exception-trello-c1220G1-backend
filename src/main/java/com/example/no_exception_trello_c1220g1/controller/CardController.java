@@ -37,16 +37,25 @@ public class CardController {
 //        return new ResponseEntity<>(cardService.findCardsByListId(id), HttpStatus.OK);
 //    }
     @PutMapping("changePosition")
-    public ResponseEntity<?> changePositionCard(@RequestBody List<Card> cards){
-        String userName = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userService.findByUsername(userName);
-        BoardTagAppUser boardTagUserCheck = boardTagAppUserService.findByBoardIdAndUserId(cards.get(0).getListTrello().getBoard().getId(), user.getId());
+    public ResponseEntity<?> changePositionCard(@RequestBody List<CardCreateDto> cards){
+        UserPrinciple userPrinciple = (UserPrinciple) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        if (boardTagUserCheck.getRoleUser().equals("ROLE_VIEW")) {
+        Optional<ListTrello> listTrello = listService.findById(cards.get(0).getListTrelloId());
+        if (!listTrello.isPresent()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        if (!cardService.checkRole(userPrinciple, listTrello)) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
-        for (Card card:cards) {
+        for (CardCreateDto cardCreateDto: cards) {
+            Card card = Card.builder()
+                    .title(cardCreateDto.getTitle())
+                    .content(cardCreateDto.getContent())
+                    .position(cardCreateDto.getPosition())
+                    .listTrello(listTrello.get())
+                    .build();
             cardService.save(card);
         }
         return new ResponseEntity<>(HttpStatus.OK);
@@ -80,22 +89,8 @@ public class CardController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        BoardTagAppUser boardTagUserCheck = (BoardTagAppUser) userPrinciple.getAllRole().get(listTrello.get().getBoard().getId()+"btu");
-        GroupTagUser groupTagUserCheck = (GroupTagUser) userPrinciple.getAllRole().get(listTrello.get().getBoard().getGroupTrello().getId()+"gtu");
-        if (listTrello.get().getBoard().getGroupTrello() == null || listTrello.get().getBoard().getType().equalsIgnoreCase("TYPE_PRIVATE")) {
-            if (boardTagUserCheck == null || (!boardTagUserCheck.getRoleUser().equals("ROLE_ADMIN") && !boardTagUserCheck.getRoleUser().equals("ROLE_EDIT"))) {
-                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-            }
-        } else {
-            if (boardTagUserCheck == null) {
-                if (groupTagUserCheck == null || (!groupTagUserCheck.getRoleUser().equals("ROLE_ADMIN") && !groupTagUserCheck.getRoleUser().equals("ROLE_EDIT"))) {
-                    return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-                }
-            } else {
-                if (!boardTagUserCheck.getRoleUser().equals("ROLE_ADMIN") && !boardTagUserCheck.getRoleUser().equals("ROLE_EDIT")) {
-                    return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-                }
-            }
+        if (!cardService.checkRole(userPrinciple, listTrello)) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
         int position = cardService.findCardsByListId(listTrello.get().getId()).size();
