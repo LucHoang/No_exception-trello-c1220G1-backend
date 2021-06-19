@@ -50,28 +50,10 @@ public class ListController {
         if (bindingResult.hasFieldErrors()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-//        String userName = SecurityContextHolder.getContext().getAuthentication().getName();
         UserPrinciple userPrinciple = (UserPrinciple) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//        User user = userService.findByUsername(userPrinciple.getUsername());
 
-        BoardTagAppUser boardTagUserCheck = (BoardTagAppUser) userPrinciple.getAllRole().get(list.getBoard().getId()+"btu");
-//        BoardTagAppUser boardTagUserCheck = boardTagAppUserService.findByBoardIdAndUserId(list.getBoard().getId(), user.getId());
-        GroupTagUser groupTagUserCheck = (GroupTagUser) userPrinciple.getAllRole().get(list.getBoard().getGroupTrello().getId()+"gtu");
-        if (list.getBoard().getGroupTrello() == null || list.getBoard().getType().equalsIgnoreCase("TYPE_PRIVATE")) {
-            if (boardTagUserCheck == null || (!boardTagUserCheck.getRoleUser().equals("ROLE_ADMIN") && !boardTagUserCheck.getRoleUser().equals("ROLE_EDIT"))) {
-                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-            }
-        } else {
-            if (boardTagUserCheck == null) {
-//                GroupTagUser groupTagUserCheck = groupTagUserService.findByGroupIdAndUserId(list.getBoard().getGroupTrello().getId(), list.getBoard().getUser().getId());
-                if (groupTagUserCheck == null || (!groupTagUserCheck.getRoleUser().equals("ROLE_ADMIN") && !groupTagUserCheck.getRoleUser().equals("ROLE_EDIT"))) {
-                    return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-                }
-            } else {
-                if (!boardTagUserCheck.getRoleUser().equals("ROLE_ADMIN") && !boardTagUserCheck.getRoleUser().equals("ROLE_EDIT")) {
-                    return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-                }
-            }
+        if (!listService.checkRole(userPrinciple, list)) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
         int position = listService.findListByBoardId(list.getBoard().getId()).size();
@@ -81,11 +63,9 @@ public class ListController {
     }
     @PutMapping("editPositionList")
     public ResponseEntity<?> changePositionList(@RequestBody ArrayList<ListTrello> lists){
-        String userName = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userService.findByUsername(userName);
-        BoardTagAppUser boardTagUserCheck = boardTagAppUserService.findByBoardIdAndUserId(lists.get(0).getBoard().getId(), user.getId());
+        UserPrinciple userPrinciple = (UserPrinciple) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        if (boardTagUserCheck.getRoleUser().equals("ROLE_VIEW")) {
+        if (!listService.checkRole(userPrinciple, lists.get(0))) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
@@ -98,12 +78,12 @@ public class ListController {
 //    }
     @PutMapping("editTitleList/{id}")
     public ResponseEntity<?> changeTitleList(@RequestBody ListTrello list, @PathVariable Long id){
-        User user = userService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-        BoardTagAppUser boardTagAppUser = boardTagAppUserService.findByBoardIdAndUserId(id,user.getId());
+        UserPrinciple userPrinciple = (UserPrinciple) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        if(boardTagAppUser.getRoleUser().equals("ROLE_VIEW")){
+        if (!listService.checkRole(userPrinciple, list)) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
+
         return new ResponseEntity<>(listService.editTitleList(list, id),HttpStatus.OK);
     }
 
