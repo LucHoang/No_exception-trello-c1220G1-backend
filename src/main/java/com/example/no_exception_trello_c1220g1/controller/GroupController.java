@@ -1,5 +1,7 @@
 package com.example.no_exception_trello_c1220g1.controller;
 
+import com.example.no_exception_trello_c1220g1.model.dto.RoleUserGroupDto;
+import com.example.no_exception_trello_c1220g1.model.dto.UserPrinciple;
 import com.example.no_exception_trello_c1220g1.model.entity.GroupTagUser;
 import com.example.no_exception_trello_c1220g1.model.entity.GroupTrello;
 import com.example.no_exception_trello_c1220g1.model.entity.User;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.Optional;
 
 @CrossOrigin("*")
 @RestController
@@ -62,5 +65,24 @@ public class GroupController {
         }
         groupService.save(groupTrello);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PutMapping("/editRoleUser")
+    public ResponseEntity<?> editRoleUser(@RequestBody RoleUserGroupDto roleUserGroupDto, BindingResult bindingResult) {
+        if (bindingResult.hasFieldErrors()) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        UserPrinciple userPrinciple = (UserPrinciple) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        GroupTagUser groupTagUserCheck = (GroupTagUser) userPrinciple.getAllRole().get(roleUserGroupDto.getGroupId()+"gtu");
+
+        if (groupTagUserCheck == null || !groupTagUserCheck.getRoleUser().equals("ROLE_ADMIN")) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+        GroupTagUser groupTagUser = groupTagUserService.findByGroupIdAndUserId(roleUserGroupDto.getGroupId(), roleUserGroupDto.getUserId());
+        if (groupTagUser == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        groupTagUser.setRoleUser(roleUserGroupDto.getRoleUser());
+        return new ResponseEntity<>(groupTagUserService.save(groupTagUser), HttpStatus.OK);
     }
 }
