@@ -1,6 +1,7 @@
 package com.example.no_exception_trello_c1220g1.controller;
 
 import com.example.no_exception_trello_c1220g1.model.dto.ListResponse;
+import com.example.no_exception_trello_c1220g1.model.dto.UserPrinciple;
 import com.example.no_exception_trello_c1220g1.model.entity.BoardTagAppUser;
 import com.example.no_exception_trello_c1220g1.model.entity.GroupTagUser;
 import com.example.no_exception_trello_c1220g1.model.entity.ListTrello;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -48,17 +50,20 @@ public class ListController {
         if (bindingResult.hasFieldErrors()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        String userName = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userService.findByUsername(userName);
+//        String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+        UserPrinciple userPrinciple = (UserPrinciple) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//        User user = userService.findByUsername(userPrinciple.getUsername());
 
-        BoardTagAppUser boardTagUserCheck = boardTagAppUserService.findByBoardIdAndUserId(list.getBoard().getId(), user.getId());
+        BoardTagAppUser boardTagUserCheck = (BoardTagAppUser) userPrinciple.getAllRole().get(list.getBoard().getId()+"btu");
+//        BoardTagAppUser boardTagUserCheck = boardTagAppUserService.findByBoardIdAndUserId(list.getBoard().getId(), user.getId());
+        GroupTagUser groupTagUserCheck = (GroupTagUser) userPrinciple.getAllRole().get(list.getBoard().getGroupTrello().getId()+"gtu");
         if (list.getBoard().getGroupTrello() == null || list.getBoard().getType().equalsIgnoreCase("TYPE_PRIVATE")) {
             if (boardTagUserCheck == null || (!boardTagUserCheck.getRoleUser().equals("ROLE_ADMIN") && !boardTagUserCheck.getRoleUser().equals("ROLE_EDIT"))) {
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
         } else {
             if (boardTagUserCheck == null) {
-                GroupTagUser groupTagUserCheck = groupTagUserService.findByGroupIdAndUserId(list.getBoard().getGroupTrello().getId(), list.getBoard().getUser().getId());
+//                GroupTagUser groupTagUserCheck = groupTagUserService.findByGroupIdAndUserId(list.getBoard().getGroupTrello().getId(), list.getBoard().getUser().getId());
                 if (groupTagUserCheck == null || (!groupTagUserCheck.getRoleUser().equals("ROLE_ADMIN") && !groupTagUserCheck.getRoleUser().equals("ROLE_EDIT"))) {
                     return new ResponseEntity<>(HttpStatus.FORBIDDEN);
                 }
@@ -68,11 +73,6 @@ public class ListController {
                 }
             }
         }
-
-//        BoardTagAppUser boardTagUserCheck = boardTagAppUserService.findByBoardIdAndUserId(list.getBoard().getId(), user.getId());
-//
-//        if (!boardTagUserCheck.getRoleUser().equals("ROLE_ADMIN") && !boardTagUserCheck.getRoleUser().equals("ROLE_EDIT")) {
-//            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 
         int position = listService.findListByBoardId(list.getBoard().getId()).size();
         list.setPosition(position);

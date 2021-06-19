@@ -1,5 +1,6 @@
 package com.example.no_exception_trello_c1220g1.controller;
 
+import com.example.no_exception_trello_c1220g1.model.dto.UserPrinciple;
 import com.example.no_exception_trello_c1220g1.model.entity.Board;
 import com.example.no_exception_trello_c1220g1.model.entity.User;
 import com.example.no_exception_trello_c1220g1.service.board.IBoardService;
@@ -11,10 +12,14 @@ import com.example.no_exception_trello_c1220g1.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +51,7 @@ public class BoardController {
     }
 //
     @PostMapping("create")
-    public ResponseEntity<Board> create(@Valid @RequestBody Board board, BindingResult bindingResult) {
+    public ResponseEntity<Board> create(@Valid @RequestBody Board board, BindingResult bindingResult, HttpServletRequest request) {
         if (bindingResult.hasFieldErrors()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -67,6 +72,8 @@ public class BoardController {
                 .roleUser("ROLE_ADMIN")
                 .build();
         boardTagAppUserService.save(boardTagAppUser);
+
+        userService.updateAllRole(userName, request);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
