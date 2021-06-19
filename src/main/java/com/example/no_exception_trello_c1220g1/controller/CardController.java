@@ -1,12 +1,13 @@
 package com.example.no_exception_trello_c1220g1.controller;
 
+import com.example.no_exception_trello_c1220g1.model.dto.CardCreateDto;
 import com.example.no_exception_trello_c1220g1.model.dto.CardDto;
-import com.example.no_exception_trello_c1220g1.model.entity.BoardTagAppUser;
-import com.example.no_exception_trello_c1220g1.model.entity.Card;
-import com.example.no_exception_trello_c1220g1.model.entity.User;
+import com.example.no_exception_trello_c1220g1.model.dto.UserPrinciple;
+import com.example.no_exception_trello_c1220g1.model.entity.*;
 import com.example.no_exception_trello_c1220g1.service.board.boardTagAppUser.IBoardTagAppUserService;
 import com.example.no_exception_trello_c1220g1.service.cardService.ICardService;
 
+import com.example.no_exception_trello_c1220g1.service.listService.IListService;
 import com.example.no_exception_trello_c1220g1.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 
 
 import java.util.List;
+import java.util.Optional;
+import java.util.OptionalInt;
 
 @RestController
 @CrossOrigin("*")
@@ -23,7 +26,8 @@ import java.util.List;
 public class CardController {
     @Autowired
     private ICardService cardService;
-
+    @Autowired
+    private IListService listService;
     @Autowired
     private UserService userService;
     @Autowired
@@ -68,21 +72,41 @@ public class CardController {
         return new ResponseEntity<>(cardService.findById(id).get(), HttpStatus.OK);
     }
     @PostMapping("create")
-    public ResponseEntity<?> createCard(@RequestBody Card card){
-        String userName = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userService.findByUsername(userName);
-        BoardTagAppUser boardTagUserCheck = boardTagAppUserService.findByBoardIdAndUserId(card.getListTrello().getBoard().getId(), user.getId());
+    public ResponseEntity<?> createCard(@RequestBody CardCreateDto cardCreateDto){
+        UserPrinciple userPrinciple = (UserPrinciple) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        if (boardTagUserCheck.getRoleUser().equals("ROLE_VIEW")) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        Optional<ListTrello> listTrello = listService.findById(cardCreateDto.getListTrelloId());
+        if (!listTrello.isPresent()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        int position = cardService.findCardsByListId(card.getListTrello().getId()).size();
-        card.setPosition(position);
-        Card newCard = cardService.save(card);
+        BoardTagAppUser boardTagUserCheck = (BoardTagAppUser) userPrinciple.getAllRole().get(listTrello.get().getBoard().getId()+"btu");
+        GroupTagUser groupTagUserCheck = (GroupTagUser) userPrinciple.getAllRole().get(listTrello.get().getBoard().getGroupTrello().getId()+"gtu");
+        if (listTrello.get().getBoard().getGroupTrello() == null || listTrello.get().getBoard().getType().equalsIgnoreCase("TYPE_PRIVATE")) {
+            if (boardTagUserCheck == null || (!boardTagUserCheck.getRoleUser().equals("ROLE_ADMIN") && !boardTagUserCheck.getRoleUser().equals("ROLE_EDIT"))) {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
+        } else {
+            if (boardTagUserCheck == null) {
+                if (groupTagUserCheck == null || (!groupTagUserCheck.getRoleUser().equals("ROLE_ADMIN") && !groupTagUserCheck.getRoleUser().equals("ROLE_EDIT"))) {
+                    return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+                }
+            } else {
+                if (!boardTagUserCheck.getRoleUser().equals("ROLE_ADMIN") && !boardTagUserCheck.getRoleUser().equals("ROLE_EDIT")) {
+                    return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+                }
+            }
+        }
 
+        int position = cardService.findCardsByListId(listTrello.get().getId()).size();
+        Card card = Card.builder()
+                .title(cardCreateDto.getTitle())
+                .content(cardCreateDto.getContent())
+                .position(position)
+                .listTrello(listTrello.get())
+                .build();
 
-        return new ResponseEntity<>(newCard, HttpStatus.OK);
+        return new ResponseEntity<>(cardService.save(card), HttpStatus.OK);
     }
 
 

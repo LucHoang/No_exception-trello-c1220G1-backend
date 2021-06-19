@@ -1,16 +1,16 @@
 package com.example.no_exception_trello_c1220g1.model.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
 import javax.persistence.*;
+import java.util.List;
 
 @EqualsAndHashCode(callSuper=true)
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Card extends Auditable<String>{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,5 +21,6 @@ public class Card extends Auditable<String>{
     private int position;
     @ManyToOne
     private ListTrello listTrello;
+//    private List<Comment> comments;
 
 }
