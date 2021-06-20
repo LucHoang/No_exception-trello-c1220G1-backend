@@ -2,6 +2,7 @@ package com.example.no_exception_trello_c1220g1.controller;
 
 import com.example.no_exception_trello_c1220g1.model.dto.CardCreateDto;
 import com.example.no_exception_trello_c1220g1.model.dto.CardDto;
+import com.example.no_exception_trello_c1220g1.model.dto.CardEditDto;
 import com.example.no_exception_trello_c1220g1.model.dto.UserPrinciple;
 import com.example.no_exception_trello_c1220g1.model.entity.*;
 import com.example.no_exception_trello_c1220g1.service.board.boardTagAppUser.IBoardTagAppUserService;
@@ -64,19 +65,20 @@ public class CardController {
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }
-    @PutMapping("edit/{boardId}/")
-    public ResponseEntity<?> editCard(@PathVariable Long boardId, @RequestBody CardDto cardDto){
-        User user = userService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-        BoardTagAppUser boardTagAppUser = boardTagAppUserService.findByBoardIdAndUserId(boardId, user.getId());
-        if(boardTagAppUser== null){
-            return new ResponseEntity<>("user invalid in group",HttpStatus.NOT_FOUND);
-        }
-        if(boardTagAppUser.getRoleUser().equals("ROLE_VIEW")){
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
+//    @PutMapping("edit/{boardId}/")
+//    public ResponseEntity<?> editCard(@PathVariable Long boardId, @RequestBody CardDto cardDto){
+//        User user = userService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+//        BoardTagAppUser boardTagAppUser = boardTagAppUserService.findByBoardIdAndUserId(boardId, user.getId());
+//        if(boardTagAppUser== null){
+//            return new ResponseEntity<>("user invalid in group",HttpStatus.NOT_FOUND);
+//        }
+//        if(boardTagAppUser.getRoleUser().equals("ROLE_VIEW")){
+//            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+//        }
+//
+//        return new ResponseEntity<>(cardService.editCard(cardDto),HttpStatus.OK);
+//    }
 
-        return new ResponseEntity<>(cardService.editCard(cardDto),HttpStatus.OK);
-    }
     @GetMapping("/{id}")
     public ResponseEntity<Card> findCardById(@PathVariable Long id){
         if (!cardService.findById(id).isPresent()){
@@ -123,5 +125,21 @@ public class CardController {
         List<Card> cards = cardService.findAllByTitleOrContentContaining(textSearch, id);
 
         return new ResponseEntity<>(cards, HttpStatus.OK);
+    }
+
+    @PutMapping("edit/")
+    public ResponseEntity<?> updateCard(@RequestBody CardEditDto cardEditDto){
+        UserPrinciple userPrinciple = (UserPrinciple) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        Optional<ListTrello> listTrello = listService.findById(cardEditDto.getListTrelloId());
+        if (!listTrello.isPresent()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        if (!cardService.checkRole(userPrinciple, listTrello)) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+
+        return new ResponseEntity<>(cardService.updateCard(cardEditDto, listTrello.get()),HttpStatus.OK);
     }
 }

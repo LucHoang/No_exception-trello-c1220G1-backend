@@ -1,6 +1,7 @@
 package com.example.no_exception_trello_c1220g1.service.cardService;
 
 import com.example.no_exception_trello_c1220g1.model.dto.CardDto;
+import com.example.no_exception_trello_c1220g1.model.dto.CardEditDto;
 import com.example.no_exception_trello_c1220g1.model.dto.UserPrinciple;
 import com.example.no_exception_trello_c1220g1.model.entity.Card;
 import com.example.no_exception_trello_c1220g1.model.entity.ListTrello;
@@ -21,4 +22,6 @@ public interface ICardService extends IGeneralService<Card> {
     boolean checkRole (UserPrinciple userPrinciple, Optional<ListTrello> listTrello);
 
     List<Card> findAllByTitleOrContentContaining(String name, Long id);
+
+    Card updateCard(CardEditDto cardEditDto, ListTrello listTrello);
 }

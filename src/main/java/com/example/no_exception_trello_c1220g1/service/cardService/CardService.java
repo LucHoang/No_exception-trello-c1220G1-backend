@@ -1,6 +1,7 @@
 package com.example.no_exception_trello_c1220g1.service.cardService;
 
 import com.example.no_exception_trello_c1220g1.model.dto.CardDto;
+import com.example.no_exception_trello_c1220g1.model.dto.CardEditDto;
 import com.example.no_exception_trello_c1220g1.model.dto.UserPrinciple;
 import com.example.no_exception_trello_c1220g1.model.entity.*;
 import com.example.no_exception_trello_c1220g1.repository.ICardRepository;
@@ -105,5 +106,18 @@ public class CardService implements ICardService {
         cards1.removeIf(card -> !card.getListTrello().getBoard().getId().equals(boardId));
 //        Page<Card> cardPage = (Page<Card>) cards1;
         return cards1;
+    }
+
+    @Override
+    public Card updateCard(CardEditDto cardEditDto, ListTrello listTrello) {
+        Card card = cardRepository.findById(cardEditDto.getId()).get();
+        card.setTitle(cardEditDto.getTitle());
+        card.setContent(cardEditDto.getContent());
+        card.setPosition(cardEditDto.getPosition());
+        card.setListTrello(listTrello);
+        card.setCardUserDtos(cardEditDto.getCardUserDtos());
+        card.setComments(cardEditDto.getComments());
+
+        return cardRepository.save(card);
     }
 }

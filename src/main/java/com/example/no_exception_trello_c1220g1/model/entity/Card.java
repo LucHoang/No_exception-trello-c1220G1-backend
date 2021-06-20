@@ -1,5 +1,6 @@
 package com.example.no_exception_trello_c1220g1.model.entity;
 
+import com.example.no_exception_trello_c1220g1.model.dto.CardUserDto;
 import lombok.*;
 
 import javax.persistence.*;
@@ -21,6 +22,9 @@ public class Card extends Auditable<String>{
     private int position;
     @ManyToOne
     private ListTrello listTrello;
-//    private List<Comment> comments;
+    @OneToMany
+    private List<Comment> comments;
+    @OneToMany
+    private List<CardUserDto> cardUserDtos;
 
 }
