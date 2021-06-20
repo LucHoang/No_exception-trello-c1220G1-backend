@@ -10,10 +10,14 @@ import com.example.no_exception_trello_c1220g1.service.cardService.ICardService;
 import com.example.no_exception_trello_c1220g1.service.listService.IListService;
 import com.example.no_exception_trello_c1220g1.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 
 import java.util.List;
@@ -113,4 +117,11 @@ public class CardController {
         return new ResponseEntity<>(cardService.findCardByLabel(id),HttpStatus.OK);
     }
 
+    @GetMapping("/search/{id}")
+    public ResponseEntity<?> searchCard(@PathVariable Long id, @RequestParam("q") String textSearch, @PageableDefault(value = 10) Pageable pageable) {
+
+        List<Card> cards = cardService.findAllByTitleOrContentContaining(textSearch, id);
+
+        return new ResponseEntity<>(cards, HttpStatus.OK);
+    }
 }

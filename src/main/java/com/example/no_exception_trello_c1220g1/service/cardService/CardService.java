@@ -6,6 +6,8 @@ import com.example.no_exception_trello_c1220g1.model.entity.*;
 import com.example.no_exception_trello_c1220g1.repository.ICardRepository;
 import com.example.no_exception_trello_c1220g1.repository.ICardTagLabelsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -91,4 +93,17 @@ public class CardService implements ICardService {
         return true;
     }
 
+    @Override
+    public List<Card> findAllByTitleOrContentContaining(String name, Long boardId) {
+        List<Card> cards1 = cardRepository.findAllByTitleContaining(name);
+        List<Card> cards2 = cardRepository.findAllByContentContaining(name);
+        for (Card card: cards1) {
+            cards2.removeIf(card2 -> card.getId().equals(card2.getId()));
+        }
+        cards1.addAll(cards2);
+
+        cards1.removeIf(card -> !card.getListTrello().getBoard().getId().equals(boardId));
+//        Page<Card> cardPage = (Page<Card>) cards1;
+        return cards1;
+    }
 }
