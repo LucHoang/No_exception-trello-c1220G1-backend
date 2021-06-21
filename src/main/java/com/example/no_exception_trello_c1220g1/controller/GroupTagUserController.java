@@ -1,30 +1,27 @@
 package com.example.no_exception_trello_c1220g1.controller;
 
-import com.example.no_exception_trello_c1220g1.model.dto.GroupTagUserDto;
 import com.example.no_exception_trello_c1220g1.model.entity.GroupTagUser;
-import com.example.no_exception_trello_c1220g1.model.entity.GroupTrello;
 import com.example.no_exception_trello_c1220g1.model.entity.User;
 import com.example.no_exception_trello_c1220g1.service.EmailService;
 import com.example.no_exception_trello_c1220g1.service.group.GroupService;
 import com.example.no_exception_trello_c1220g1.service.group.groupTagUser.IGroupTagUserService;
+import com.example.no_exception_trello_c1220g1.service.token.JwtService;
 import com.example.no_exception_trello_c1220g1.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-import java.util.Optional;
 
 @CrossOrigin("*")
 @RestController
-@RequestMapping("/group-tag-user")
+@RequestMapping("/groupTagUser")
 public class GroupTagUserController {
     @Autowired
     IGroupTagUserService groupTagUserService;
+    @Autowired
+    private JwtService jwtService;
     @Autowired
     private UserService userService;
     @Autowired
@@ -32,44 +29,37 @@ public class GroupTagUserController {
     @Autowired
     EmailService emailService;
 
-    @PostMapping("add")
-    public ResponseEntity<?> add(@Valid @RequestBody GroupTagUserDto groupTagUserDto, BindingResult bindingResult){
-        if (bindingResult.hasFieldErrors()) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        User userMail = userService.findByEmail(groupTagUserDto.getEmail());
+    @GetMapping("add/{groupId}/{email}/{roleUser}")
+    public ResponseEntity<?> add(@PathVariable Long groupId, @PathVariable String email, @PathVariable String roleUser, HttpServletRequest request){
+        User userMail = userService.findByEmail(email);
         if (userMail == null) {
             return new ResponseEntity<>("Email does not exist!", HttpStatus.NOT_FOUND);
         }
-        if (groupTagUserService.findByGroupIdAndUserId(groupTagUserDto.getGroupId(), userMail.getId()) != null) {
+        if (groupTagUserService.findByGroupIdAndUserId(groupId, userMail.getId()) != null) {
             return new ResponseEntity<>("User is already a member", HttpStatus.BAD_REQUEST);
         }
 
-        String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+        String authHeader = request.getHeader("Authorization");
+        String userName = jwtService.getUserNameFromJwtToken(authHeader.replace("Bearer ", ""));
         User user = userService.findByUsername(userName);
-        GroupTagUser groupTagUserCheck = groupTagUserService.findByGroupIdAndUserId(groupTagUserDto.getGroupId(), user.getId());
+        GroupTagUser groupTagUserCheck = groupTagUserService.findByGroupIdAndUserId(groupId, user.getId());
 
         if (!groupTagUserCheck.getRoleUser().equals("ROLE_ADMIN")) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
-        Optional<GroupTrello> groupTrello = groupService.findById(groupTagUserDto.getGroupId());
-        if (!groupTrello.isPresent()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
         GroupTagUser groupTagUser = GroupTagUser.builder()
                 .user(userMail)
-                .groupTrello(groupTrello.get())
-                .roleUser(groupTagUserDto.getRoleUser())
+                .groupTrello(groupService.findById(groupId).get())
+                .roleUser(roleUser)
                 .build();
 
-        emailService.sendEmail(groupTagUserDto.getEmail());
+        emailService.sendEmail(email);
 
          return new ResponseEntity<>(groupTagUserService.save(groupTagUser), HttpStatus.OK);
      }
 
-    @GetMapping("/list-group/{id}")
+    @GetMapping("/listgroup/{id}")
     public ResponseEntity<Iterable<GroupTagUser>> findAllByUserId(@PathVariable Long id, HttpServletRequest request){
 
 
@@ -79,19 +69,6 @@ public class GroupTagUserController {
     @GetMapping("/listgroup/{id}/{type}")
     public ResponseEntity<Iterable<GroupTagUser>> findAllByUserIdAndType(@PathVariable Long id,@PathVariable String type){
         return new ResponseEntity<>(groupTagUserService.findAllByUserIdAndType(id,type),HttpStatus.OK);
-    }
-    @DeleteMapping("/delete-user/{groupId}/{userId}")
-    public ResponseEntity<?> deleteUser(@PathVariable Long groupId,@PathVariable Long userId){
-        GroupTagUser groupTagUser = groupTagUserService.findByGroupIdAndUserId(groupId,userService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).getId());
-        if(!groupTagUser.getRoleUser().equals("ROLE_ADMIN")){
-            return new ResponseEntity<>("User has not authorities",HttpStatus.FORBIDDEN);
-        }
-        User user = groupTagUserService.findById(groupId).get().getUser();
-        if(user== null){
-            return new ResponseEntity<>("User not in Group",HttpStatus.NOT_FOUND);
-        }
-        groupTagUserService.deleteUserFromGroup(userId,groupId);
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }

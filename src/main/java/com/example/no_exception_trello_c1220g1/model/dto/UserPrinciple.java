@@ -9,9 +9,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Data
@@ -19,18 +17,16 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @Builder
 public class UserPrinciple implements UserDetails {
-
     private Long id;
 
     private String username;
 
     private String password;
 
+
     private Collection<? extends GrantedAuthority> roles;
 
-    private HashMap allRole;
-
-    public static UserPrinciple build(User user, HashMap allRole) {
+    public static UserPrinciple build(User user) {
         List<GrantedAuthority> authorities = user.getAppRole().stream().map(role ->
                 new SimpleGrantedAuthority(role.getRoleName())
         ).collect(Collectors.toList());
@@ -39,8 +35,7 @@ public class UserPrinciple implements UserDetails {
                 user.getId(),
                 user.getUserName(),
                 user.getPassWord(),
-                authorities,
-                allRole
+                authorities
         );
     }
 

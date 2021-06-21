@@ -37,7 +37,7 @@ public class GroupTagUserService implements IGroupTagUserService{
     }
 
     @Override
-    public List<GroupTagUser> findAllByUserId(Long id) {
+    public Iterable<GroupTagUser> findAllByUserId(Long id) {
         return groupTagUserRepository.findAllByUserId(id);
     }
 
@@ -46,10 +46,6 @@ public class GroupTagUserService implements IGroupTagUserService{
         return groupTagUserRepository.findAllByUserIdAndType(type,id);
     }
 
-    @Override
-    public void deleteUserFromGroup(Long userId, Long groupId) {
-        groupTagUserRepository.deleteByUserId(userId,groupId);
-    }
 
 
 }

@@ -36,10 +36,5 @@ public class BoardService implements IBoardService{
     @Override
     public Iterable<Board> findBoardByGroupId(Long id) {
         return boardRepository.findBoardsByGroupId(id);
-    }
-
-    @Override
-    public List<Board> findBoardByType(Long id, String type) {
-        return boardRepository.findAllByUser_IdAndType(id, type);
-    }
+        }
 }

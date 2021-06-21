@@ -1,13 +1,10 @@
 package com.example.no_exception_trello_c1220g1.controller;
 
 import com.example.no_exception_trello_c1220g1.model.dto.ListResponse;
-import com.example.no_exception_trello_c1220g1.model.dto.UserPrinciple;
 import com.example.no_exception_trello_c1220g1.model.entity.BoardTagAppUser;
-import com.example.no_exception_trello_c1220g1.model.entity.GroupTagUser;
 import com.example.no_exception_trello_c1220g1.model.entity.ListTrello;
 import com.example.no_exception_trello_c1220g1.model.entity.User;
 import com.example.no_exception_trello_c1220g1.service.board.boardTagAppUser.IBoardTagAppUserService;
-import com.example.no_exception_trello_c1220g1.service.group.groupTagUser.IGroupTagUserService;
 import com.example.no_exception_trello_c1220g1.service.listService.IListService;
 import com.example.no_exception_trello_c1220g1.service.token.JwtService;
 import com.example.no_exception_trello_c1220g1.service.user.UserService;
@@ -25,47 +22,48 @@ import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping("/list")
 @CrossOrigin("*")
 public class ListController {
+
     @Autowired
     private IListService listService;
-    @Autowired
-    private JwtService jwtService;
     @Autowired
     private UserService userService;
     @Autowired
     private IBoardTagAppUserService boardTagAppUserService;
-    @Autowired
-    private IGroupTagUserService groupTagUserService;
+
     @GetMapping("/board/{id}")
     public ResponseEntity<?> findListByBoardId(@PathVariable Long id){
-        return new ResponseEntity<>(listService.findListByBoardId(id),HttpStatus.OK);
+        return new ResponseEntity<>(listService.findAllListByBoardId(id),HttpStatus.OK);
     }
 
-
-    @PostMapping("createList")
+    @PostMapping()
     public ResponseEntity<?> createList(@Valid @RequestBody ListTrello list, HttpServletRequest request, BindingResult bindingResult){
         if (bindingResult.hasFieldErrors()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        UserPrinciple userPrinciple = (UserPrinciple) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userService.findByUsername(userName);
+        BoardTagAppUser boardTagUserCheck = boardTagAppUserService.findByBoardIdAndUserId(list.getBoard().getId(), user.getId());
 
-        if (!listService.checkRole(userPrinciple, list)) {
+        if (boardTagUserCheck.getRoleUser().equals("ROLE_VIEW")) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
         int position = listService.findListByBoardId(list.getBoard().getId()).size();
         list.setPosition(position);
-        listService.save(list);
-        return new  ResponseEntity<>("Create obj List success", HttpStatus.OK);
+        ListTrello response = listService.save(list);
+        return new  ResponseEntity<>(response, HttpStatus.OK);
     }
     @PutMapping("editPositionList")
     public ResponseEntity<?> changePositionList(@RequestBody ArrayList<ListTrello> lists){
-        UserPrinciple userPrinciple = (UserPrinciple) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userService.findByUsername(userName);
+        BoardTagAppUser boardTagUserCheck = boardTagAppUserService.findByBoardIdAndUserId(lists.get(0).getBoard().getId(), user.getId());
 
-        if (!listService.checkRole(userPrinciple, lists.get(0))) {
+        if (boardTagUserCheck.getRoleUser().equals("ROLE_VIEW")) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
@@ -78,15 +76,9 @@ public class ListController {
 //    }
     @PutMapping("editTitleList/{id}")
     public ResponseEntity<?> changeTitleList(@RequestBody ListTrello list, @PathVariable Long id){
-        UserPrinciple userPrinciple = (UserPrinciple) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        if (!listService.checkRole(userPrinciple, list)) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
 
         return new ResponseEntity<>(listService.editTitleList(list, id),HttpStatus.OK);
     }
-
     @GetMapping("/{id}")
     private ResponseEntity<List<ListResponse>> getAllCardByBoardId(@PathVariable Long id){
         return new ResponseEntity<>(listService.findAllListByBoardId(id),HttpStatus.OK);

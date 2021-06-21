@@ -69,16 +69,6 @@ public class BoardTagAppUserService implements IBoardTagAppUserService{
         }
         return false;
     }
-
-    @Override
-    public List<BoardTagAppUser> findBoardByUserIdAndBoardType (Long id, String type) {
-        return boardTagAppUserRepository.findAllByAppUser_IdAndBoard_Type(id, type);
-    }
-
-    @Override
-    public List<BoardTagAppUser> findAllByUserId (Long userId) {
-        return boardTagAppUserRepository.findAllByAppUser_Id(userId);
-    }
 //    @Autowired
 //    private TagUser_Board_Repo tagUserBoardRepo;
 //

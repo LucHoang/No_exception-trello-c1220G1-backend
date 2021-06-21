@@ -1,7 +1,5 @@
 package com.example.no_exception_trello_c1220g1.controller;
 
-import com.example.no_exception_trello_c1220g1.model.dto.BoardTagUserDto;
-import com.example.no_exception_trello_c1220g1.model.entity.Board;
 import com.example.no_exception_trello_c1220g1.model.entity.BoardTagAppUser;
 import com.example.no_exception_trello_c1220g1.model.dto.BoardDto;
 import com.example.no_exception_trello_c1220g1.model.entity.User;
@@ -13,14 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @CrossOrigin("*")
 @RestController
@@ -29,7 +24,6 @@ public class BoardTagAppUserController {
 
     @Autowired
     private IBoardTagAppUserService boardTagAppUserService;
-
     @Autowired
     private UserService userService;
     @Autowired
@@ -37,37 +31,31 @@ public class BoardTagAppUserController {
     @Autowired
     EmailService emailService;
 
-    @PostMapping("add")
-    public ResponseEntity<?> add(@Valid @RequestBody BoardTagUserDto boardTagUserDto, BindingResult bindingResult){
-        if (bindingResult.hasFieldErrors()) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        User userMail = userService.findByEmail(boardTagUserDto.getEmail());
+    //Todo Cho vào request, không cho email hay role lên pathVariable ntn.
+    @GetMapping("add/{boardId}/{email}/{roleUser}")
+    public ResponseEntity<?> add(@PathVariable Long boardId, @PathVariable String email, @PathVariable String roleUser, HttpServletRequest request){
+        User userMail = userService.findByEmail(email);
         if (userMail == null) {
             return new ResponseEntity<>("Email does not exist!", HttpStatus.NOT_FOUND);
         }
-        if (boardTagAppUserService.findByBoardIdAndUserId(boardTagUserDto.getBoardId(), userMail.getId()) != null) {
+        if (boardTagAppUserService.findByBoardIdAndUserId(boardId, userMail.getId()) != null) {
             return new ResponseEntity<>("User is already a member", HttpStatus.BAD_REQUEST);
         }
+        //Todo dùng SecurityContextHolder.getContext().getAuthentication() để lấy thông tin userName, Chỉ xử lí token ở bước filter đầu tiên;
 //        String authHeader = request.getHeader("Authorization");
 //        String userName = jwtService.getUserNameFromJwtToken(authHeader.replace("Bearer ", ""));
         String userName = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userService.findByUsername(userName);
-        BoardTagAppUser boardTagUserCheck = boardTagAppUserService.findByBoardIdAndUserId(boardTagUserDto.getBoardId(), user.getId());
+        BoardTagAppUser boardTagUserCheck = boardTagAppUserService.findByBoardIdAndUserId(boardId, user.getId());
 
         if (!boardTagUserCheck.getRoleUser().equals("ROLE_ADMIN")) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
-        Optional<Board> board = boardService.findById(boardTagUserDto.getBoardId());
-        if (!board.isPresent()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
         BoardTagAppUser boardTagAppUser = BoardTagAppUser.builder()
                 .appUser(userMail)
-                .board(board.get())
-                .roleUser(boardTagUserDto.getRoleUser())
+                .board(boardService.findById(boardId).get())
+                .roleUser(roleUser)
                 .build();
 
 //        emailService.sendEmail(email);
@@ -76,17 +64,20 @@ public class BoardTagAppUserController {
     }
 //    @Autowired
 //    private BoardTagAppUserService boardTagAppUserService;
-    @GetMapping("/list-board-with-type")
+    //Todo đặt lên endpoint không viết liền ntn. list-board-with-type
+    @GetMapping("list-board-with-type/")
     public ResponseEntity<List<BoardDto>> getListByType(){
 
 
-
-        Long userId = userService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).getId();
+        //Todo áp dụng Nguyên lý S trong SOLID 1 hàm chỉ làm 1 nhiệm vụ, không xử lí token ở đây,
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Long userId = userService.findByUsername(username).getId();
 
         List<BoardTagAppUser> boardTagAppUserList = boardTagAppUserService.findBoardByUserIdAndTypeBoardAndRoleUser(userId);
         List<BoardDto> boardDtoList = new ArrayList<>();
         for (BoardTagAppUser board:boardTagAppUserList
              ) {
+            //Todo không setFields Dto ở đây, đẩy xử lí trong service
             BoardDto boardDto = new BoardDto();
             boardDto.setType(board.getBoard().getType());
             boardDto.setGroupTrello(board.getBoard().getGroupTrello());

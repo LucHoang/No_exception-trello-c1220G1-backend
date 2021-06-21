@@ -12,7 +12,4 @@ public interface IBoardTagAppUserRepository extends JpaRepository<BoardTagAppUse
     BoardTagAppUser findByBoard_IdAndAppUser_Id (Long boardId, Long userId);
     @Query(value = "SELECT * FROM board join board_tag_app_user on board.id = board_tag_app_user.board_id where board_tag_app_user.app_user_id = ?1 ",nativeQuery = true)
     List<BoardTagAppUser> findBoardTagAppUserByUserIdAndTypeBoardAndRoleUser(Long id);
-
-    List<BoardTagAppUser> findAllByAppUser_IdAndBoard_Type (Long UserId, String type);
-    List<BoardTagAppUser> findAllByAppUser_Id (Long UserId);
 }
