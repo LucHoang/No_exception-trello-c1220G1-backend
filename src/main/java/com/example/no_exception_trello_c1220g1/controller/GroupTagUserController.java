@@ -21,7 +21,7 @@ import java.util.Optional;
 
 @CrossOrigin("*")
 @RestController
-@RequestMapping("/group-tag-user")
+@RequestMapping("/groupTagUser")
 public class GroupTagUserController {
     @Autowired
     IGroupTagUserService groupTagUserService;
@@ -69,7 +69,7 @@ public class GroupTagUserController {
          return new ResponseEntity<>(groupTagUserService.save(groupTagUser), HttpStatus.OK);
      }
 
-    @GetMapping("/list-group/{id}")
+    @GetMapping("/listgroup/{id}")
     public ResponseEntity<Iterable<GroupTagUser>> findAllByUserId(@PathVariable Long id, HttpServletRequest request){
 
 
@@ -93,5 +93,6 @@ public class GroupTagUserController {
         groupTagUserService.deleteUserFromGroup(userId,groupId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
 
 }

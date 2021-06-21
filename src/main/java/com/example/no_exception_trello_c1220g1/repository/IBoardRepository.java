@@ -11,9 +11,11 @@ import java.util.List;
 
 @Repository
 public interface IBoardRepository extends JpaRepository<Board,Long> {
-    @Query(value = "select * from cms.board where group_id_id = ?1",nativeQuery = true)
+    @Query(value = "select * from board where group_id_id = ?1",nativeQuery = true)
     Iterable<Board> findBoardsByGroupId(Long id);
 
     List<Board> findAllByUser_IdAndType(Long userId, String type);
     List<Board> findAllByUser_Id(Long userId);
+    @Query(value = "select * from board where created_by =?1",nativeQuery = true)
+    List<Board> findBoardByCreatedByUser(String username);
 }

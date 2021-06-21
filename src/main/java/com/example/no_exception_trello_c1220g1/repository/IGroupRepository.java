@@ -9,6 +9,6 @@ import java.util.List;
 
 @Repository
 public interface IGroupRepository extends JpaRepository<GroupTrello,Long> {
-    @Query(nativeQuery = true,value = "SELECT * FROM trello.group_trello where created_by = ?1")
+    @Query(nativeQuery = true,value = "SELECT * FROM group_trello where created_by = ?1")
     List<GroupTrello> findAllByUser(String username);
 }
