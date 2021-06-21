@@ -1,11 +1,10 @@
 package com.example.no_exception_trello_c1220g1.service.listService;
 
 import com.example.no_exception_trello_c1220g1.model.dto.*;
-import com.example.no_exception_trello_c1220g1.model.entity.BoardTagAppUser;
-import com.example.no_exception_trello_c1220g1.model.entity.Card;
-import com.example.no_exception_trello_c1220g1.model.entity.GroupTagUser;
-import com.example.no_exception_trello_c1220g1.model.entity.ListTrello;
+import com.example.no_exception_trello_c1220g1.model.entity.*;
 import com.example.no_exception_trello_c1220g1.repository.IListRepository;
+import com.example.no_exception_trello_c1220g1.service.board.BoardService;
+import com.example.no_exception_trello_c1220g1.service.board.IBoardService;
 import com.example.no_exception_trello_c1220g1.service.cardService.ICardService;
 import com.example.no_exception_trello_c1220g1.service.cardTagUserService.ICardTagUserService;
 import com.example.no_exception_trello_c1220g1.service.commentService.ICommentService;
@@ -28,6 +27,8 @@ public class ListService implements IListService{
     ICommentService commentService;
     @Autowired
     ICardTagUserService cardTagUserService;
+    @Autowired
+    IBoardService boardService;
 
 
 
@@ -55,9 +56,12 @@ public class ListService implements IListService{
 
     @Override
     public void editPositionList(ArrayList<ListTrello> lists) {
-        for (int i = 0; i < lists.size(); i++) {
-            listRepository.save(lists.get(i));
-        }
+            for (int i = 0; i < lists.size(); i++) {
+                ListTrello update = lists.get(i);
+                ListTrello list = listRepository.getById(update.getId());
+                list.setPosition(update.getPosition());
+                listRepository.save(list);
+            }
     }
 
     @Override

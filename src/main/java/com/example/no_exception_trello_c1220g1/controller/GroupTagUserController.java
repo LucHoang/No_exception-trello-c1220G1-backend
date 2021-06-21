@@ -21,7 +21,7 @@ import java.util.Optional;
 
 @CrossOrigin("*")
 @RestController
-@RequestMapping("/group-tag-user")
+@RequestMapping("/groupTagUser")
 public class GroupTagUserController {
     @Autowired
     IGroupTagUserService groupTagUserService;

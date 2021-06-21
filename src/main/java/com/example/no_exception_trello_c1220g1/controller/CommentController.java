@@ -7,6 +7,7 @@ import com.example.no_exception_trello_c1220g1.model.entity.User;
 import com.example.no_exception_trello_c1220g1.service.cardService.ICardService;
 import com.example.no_exception_trello_c1220g1.service.commentService.ICommentService;
 import com.example.no_exception_trello_c1220g1.service.user.IUserService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,7 @@ import java.util.Optional;
 @RestController
 @CrossOrigin("*")
 @RequestMapping("/comments")
+@AllArgsConstructor
 public class CommentController {
     ICommentService commentService;
     ICardService cardService;

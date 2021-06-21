@@ -30,7 +30,7 @@ public class CardService implements ICardService {
 
     @Override
     public Optional<Card> findById(Long id) {
-        return Optional.empty();
+        return cardRepository.findById(id);
     }
 
     @Override
