@@ -18,11 +18,8 @@ public class Comment extends Auditable<String>{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String content;
-    private String username;
-    private String avatar;
-//    @ManyToOne
-//    private User appUser;
-//    @ManyToOne
-//    private Card card;
-//    private Date date_create;
+    @ManyToOne
+    private User appUser;
+    @ManyToOne
+    private Card card;
 }

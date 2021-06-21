@@ -86,7 +86,7 @@ public class CardController {
         }
         return new ResponseEntity<>(cardService.findById(id).get(), HttpStatus.OK);
     }
-    @PostMapping("create")
+    @PostMapping()
     public ResponseEntity<?> createCard(@RequestBody CardCreateDto cardCreateDto){
         UserPrinciple userPrinciple = (UserPrinciple) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
@@ -111,13 +111,13 @@ public class CardController {
     }
 
 
-    @GetMapping("/search-by-label/{id}")
-        public ResponseEntity<?> searchCardByLabelsId (@PathVariable Long id){
-        if (cardService.findCardByLabel(id).isEmpty()){
-            return new ResponseEntity<>("not found",HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(cardService.findCardByLabel(id),HttpStatus.OK);
-    }
+//    @GetMapping("/search-by-label/{id}")
+//        public ResponseEntity<?> searchCardByLabelsId (@PathVariable Long id){
+//        if (cardService.findCardByLabel(id).isEmpty()){
+//            return new ResponseEntity<>("not found",HttpStatus.NOT_FOUND);
+//        }
+//        return new ResponseEntity<>(cardService.findCardByLabel(id),HttpStatus.OK);
+//    }
 
     @GetMapping("/search/{id}")
     public ResponseEntity<?> searchCard(@PathVariable Long id, @RequestParam("q") String textSearch, @PageableDefault(value = 10) Pageable pageable) {

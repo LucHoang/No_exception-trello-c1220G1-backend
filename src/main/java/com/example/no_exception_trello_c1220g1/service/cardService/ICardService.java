@@ -16,7 +16,7 @@ public interface ICardService extends IGeneralService<Card> {
     List<Card> findCardsByListId(Long id);
 //    List<Card> findCardsByBroadIdAndUserId (Long broadId, Long userId);
 //    List<Card> findAllCard();
-    List<CardDto> findCardByLabel(Long label_id);
+//    List<CardDto> findCardByLabel(Long label_id);
     Card editCard(CardDto cardDto);
 
     boolean checkRole (UserPrinciple userPrinciple, Optional<ListTrello> listTrello);

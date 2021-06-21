@@ -49,19 +49,19 @@ public class CardService implements ICardService {
         return cardList;
     }
 
-    @Override
-    public List<CardDto> findCardByLabel(Long label_id) {
-        List<Card> cardList = new ArrayList<>();
-        for (CardTagLabels cardTag: cardTagLabelsRepository.findByLabelId(label_id)
-             ) {
-            cardList.add(cardTag.getCard());
-        }
-        List<CardDto> cardDtoList = new ArrayList<>();
-        for (Card card : cardList){
-            cardDtoList.add(new CardDto(card.getId(),card.getTitle(),card.getContent(),card.getPosition()));
-        }
-        return cardDtoList;
-    }
+//    @Override
+//    public List<CardDto> findCardByLabel(Long label_id) {
+//        List<Card> cardList = new ArrayList<>();
+//        for (CardTagLabels cardTag: cardTagLabelsRepository.findByLabelId(label_id)
+//             ) {
+//            cardList.add(cardTag.getCard());
+//        }
+//        List<CardDto> cardDtoList = new ArrayList<>();
+//        for (Card card : cardList){
+//            cardDtoList.add(new CardDto(card.getId(),card.getTitle(),card.getContent(),card.getPosition()));
+//        }
+//        return cardDtoList;
+//    }
 
     @Override
     public Card editCard(CardDto cardDto) {
@@ -115,8 +115,8 @@ public class CardService implements ICardService {
         card.setContent(cardEditDto.getContent());
         card.setPosition(cardEditDto.getPosition());
         card.setListTrello(listTrello);
-        card.setCardUserDtos(cardEditDto.getCardUserDtos());
-        card.setComments(cardEditDto.getComments());
+//        card.setCardUserDtos(cardEditDto.getCardUserDtos());
+//        card.setComments(cardEditDto.getComments());
 
         return cardRepository.save(card);
     }

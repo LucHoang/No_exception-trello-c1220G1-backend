@@ -41,11 +41,11 @@ public class ListController {
     private IGroupTagUserService groupTagUserService;
     @GetMapping("/board/{id}")
     public ResponseEntity<?> findListByBoardId(@PathVariable Long id){
-        return new ResponseEntity<>(listService.findListByBoardId(id),HttpStatus.OK);
+        return new ResponseEntity<>(listService.findAllListByBoardId(id),HttpStatus.OK);
     }
 
 
-    @PostMapping("createList")
+    @PostMapping()
     public ResponseEntity<?> createList(@Valid @RequestBody ListTrello list, HttpServletRequest request, BindingResult bindingResult){
         if (bindingResult.hasFieldErrors()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -58,8 +58,8 @@ public class ListController {
 
         int position = listService.findListByBoardId(list.getBoard().getId()).size();
         list.setPosition(position);
-        listService.save(list);
-        return new  ResponseEntity<>("Create obj List success", HttpStatus.OK);
+        ListTrello response = listService.save(list);
+        return new  ResponseEntity<>(response, HttpStatus.OK);
     }
     @PutMapping("editPositionList")
     public ResponseEntity<?> changePositionList(@RequestBody ArrayList<ListTrello> lists){

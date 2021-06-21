@@ -22,9 +22,5 @@ public class Card extends Auditable<String>{
     private int position;
     @ManyToOne
     private ListTrello listTrello;
-    @OneToMany
-    private List<Comment> comments;
-    @OneToMany
-    private List<CardUserDto> cardUserDtos;
 
 }
