@@ -58,10 +58,10 @@ public class ListController {
     @PutMapping("editPositionList")
     public ResponseEntity<?> changePositionList(@RequestBody ArrayList<ListTrello> lists){
         UserPrinciple userPrinciple = (UserPrinciple) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        if (!listService.checkRole(userPrinciple, lists.get(0))) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
+//
+//        if (!listService.checkRole(userPrinciple, lists.get(0))) {
+//            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+//        }
 
         listService.editPositionList(lists);
         return new ResponseEntity<>(HttpStatus.OK);
