@@ -1,14 +1,14 @@
 package com.example.no_exception_trello_c1220g1.service.listService;
 
-import com.example.no_exception_trello_c1220g1.model.dto.CardDto;
-import com.example.no_exception_trello_c1220g1.model.dto.ListResponse;
-import com.example.no_exception_trello_c1220g1.model.dto.UserPrinciple;
+import com.example.no_exception_trello_c1220g1.model.dto.*;
 import com.example.no_exception_trello_c1220g1.model.entity.BoardTagAppUser;
 import com.example.no_exception_trello_c1220g1.model.entity.Card;
 import com.example.no_exception_trello_c1220g1.model.entity.GroupTagUser;
 import com.example.no_exception_trello_c1220g1.model.entity.ListTrello;
 import com.example.no_exception_trello_c1220g1.repository.IListRepository;
 import com.example.no_exception_trello_c1220g1.service.cardService.ICardService;
+import com.example.no_exception_trello_c1220g1.service.cardTagUserService.ICardTagUserService;
+import com.example.no_exception_trello_c1220g1.service.commentService.ICommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +24,10 @@ public class ListService implements IListService{
     IListRepository listRepository;
     @Autowired
     ICardService iCardService;
+    @Autowired
+    ICommentService commentService;
+    @Autowired
+    ICardTagUserService cardTagUserService;
 
 
 
@@ -72,16 +76,19 @@ public class ListService implements IListService{
         List<ListResponse> listResponses = new ArrayList<>();
         List<Card> cardList = new ArrayList<>();
 
-        for (ListTrello listTrello:listTrellos
-             ) {
+        for (ListTrello listTrello : listTrellos
+        ) {
             List<CardDto> cardDtoList = new ArrayList<>();
             cardList = iCardService.findCardsByListId(listTrello.getId());
-            for (Card card: cardList
-                 ) {
-                CardDto cardDto = new CardDto(card.getId(),card.getTitle(),card.getContent(), card.getPosition());
+            for (Card card : cardList
+            ) {
+                //add
+                List<CommentResponse> comments = commentService.findAllByCardId(card.getId());
+                List<UserResponse> users = cardTagUserService.findAllByCardId(card.getId());
+                CardDto cardDto = new CardDto(card.getId(), card.getTitle(), card.getContent(), card.getPosition(),comments,users);
                 cardDtoList.add(cardDto);
             }
-            ListResponse listResponse = new ListResponse(listTrello.getId(),listTrello.getTitle(),listTrello.getPosition(),cardDtoList);
+            ListResponse listResponse = new ListResponse(listTrello.getId(), listTrello.getTitle(), listTrello.getPosition(), cardDtoList);
             listResponses.add(listResponse);
 
         }

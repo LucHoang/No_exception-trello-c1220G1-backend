@@ -51,7 +51,7 @@ public class BoardController {
         return new ResponseEntity<>(boardService.findBoardByGroupId(id),HttpStatus.OK);
     }
 //
-    @PostMapping("create")
+    @PostMapping()
     public ResponseEntity<Board> create(@Valid @RequestBody Board board, BindingResult bindingResult, HttpServletRequest request) {
         if (bindingResult.hasFieldErrors()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -67,19 +67,19 @@ public class BoardController {
         String userName = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userService.findByUsername(userName);
 
+        board.setUser(user);
+        Board response = boardService.save(board);
         BoardTagAppUser boardTagAppUser = BoardTagAppUser.builder()
                 .appUser(user)
-                .board(boardService.save(board))
+                .board(response)
                 .roleUser("ROLE_ADMIN")
                 .build();
+
         boardTagAppUserService.save(boardTagAppUser);
-
-        userService.updateAllRole(userName, request);
-
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping("findBoardById/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Board> findBoardById(@PathVariable Long id) {
         Optional<Board> board = boardService.findById(id);
         if (!board.isPresent()) {
