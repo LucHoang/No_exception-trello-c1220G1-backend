@@ -30,7 +30,7 @@ public class CardService implements ICardService {
 
     @Override
     public Optional<Card> findById(Long id) {
-        return Optional.empty();
+        return cardRepository.findById(id);
     }
 
     @Override
@@ -75,7 +75,13 @@ public class CardService implements ICardService {
     @Override
     public boolean checkRole (UserPrinciple userPrinciple, Optional<ListTrello> listTrello) {
         BoardTagAppUser boardTagUserCheck = (BoardTagAppUser) userPrinciple.getAllRole().get(listTrello.get().getBoard().getId()+"btu");
-        GroupTagUser groupTagUserCheck = (GroupTagUser) userPrinciple.getAllRole().get(listTrello.get().getBoard().getGroupTrello().getId()+"gtu");
+        GroupTagUser groupTagUserCheck;
+        if (listTrello.get().getBoard().getGroupTrello() == null) {
+            groupTagUserCheck = null;
+        } else {
+            groupTagUserCheck = (GroupTagUser) userPrinciple.getAllRole().get(listTrello.get().getBoard().getGroupTrello().getId()+"gtu");
+        }
+
         if (listTrello.get().getBoard().getGroupTrello() == null || listTrello.get().getBoard().getType().equalsIgnoreCase("TYPE_PRIVATE")) {
             if (boardTagUserCheck == null || (!boardTagUserCheck.getRoleUser().equals("ROLE_ADMIN") && !boardTagUserCheck.getRoleUser().equals("ROLE_EDIT"))) {
                 return false;

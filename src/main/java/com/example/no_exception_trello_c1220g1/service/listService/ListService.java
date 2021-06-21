@@ -98,7 +98,13 @@ public class ListService implements IListService{
     @Override
     public boolean checkRole(UserPrinciple userPrinciple, ListTrello listTrello) {
         BoardTagAppUser boardTagUserCheck = (BoardTagAppUser) userPrinciple.getAllRole().get(listTrello.getBoard().getId()+"btu");
-        GroupTagUser groupTagUserCheck = (GroupTagUser) userPrinciple.getAllRole().get(listTrello.getBoard().getGroupTrello().getId()+"gtu");
+        GroupTagUser groupTagUserCheck;
+        if (listTrello.getBoard().getGroupTrello() == null) {
+            groupTagUserCheck = null;
+        } else {
+            groupTagUserCheck = (GroupTagUser) userPrinciple.getAllRole().get(listTrello.getBoard().getGroupTrello().getId()+"gtu");
+        }
+
         if (listTrello.getBoard().getGroupTrello() == null || listTrello.getBoard().getType().equalsIgnoreCase("TYPE_PRIVATE")) {
             if (boardTagUserCheck == null || (!boardTagUserCheck.getRoleUser().equals("ROLE_ADMIN") && !boardTagUserCheck.getRoleUser().equals("ROLE_EDIT"))) {
                 return false;
