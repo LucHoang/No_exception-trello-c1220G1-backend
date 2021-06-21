@@ -85,4 +85,18 @@ public class GroupController {
         groupTagUser.setRoleUser(roleUserGroupDto.getRoleUser());
         return new ResponseEntity<>(groupTagUserService.save(groupTagUser), HttpStatus.OK);
     }
+    @PutMapping("/edit-type-group/{groupid}")
+    public ResponseEntity<?> editTypeGroup(@RequestBody String type,@PathVariable Long groupid){
+        UserPrinciple userPrinciple = (UserPrinciple) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        GroupTagUser groupTagUser = (GroupTagUser) userPrinciple.getAllRole().get(groupid+"gtu");
+        if (groupTagUser == null || !groupTagUser.getRoleUser().equals("ROLE_ADMIN")){
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+        Optional<GroupTrello> groupTrello = groupService.findById(groupid);
+        if(!groupTrello.isPresent()){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        groupTrello.get().setType(type);
+        return new ResponseEntity<>(groupService.save(groupTrello.get()),HttpStatus.OK);
+    }
 }

@@ -16,4 +16,6 @@ public interface IBoardRepository extends JpaRepository<Board,Long> {
 
     List<Board> findAllByUser_IdAndType(Long userId, String type);
     List<Board> findAllByUser_Id(Long userId);
+    @Query(value = "select * from board where created_by =?1",nativeQuery = true)
+    List<Board> findBoardByCreatedByUser(String username);
 }

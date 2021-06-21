@@ -1,5 +1,6 @@
 package com.example.no_exception_trello_c1220g1.controller;
 
+import com.example.no_exception_trello_c1220g1.model.dto.BoardDto;
 import com.example.no_exception_trello_c1220g1.model.dto.UserPrinciple;
 import com.example.no_exception_trello_c1220g1.model.entity.Board;
 import com.example.no_exception_trello_c1220g1.model.entity.User;
@@ -121,5 +122,10 @@ public class BoardController {
         }
 
         return new ResponseEntity<>(boards, HttpStatus.OK);
+    }
+    @GetMapping("showAllBoardCreateByUserName")
+    public ResponseEntity<List<BoardDto>> showAllBoardCreatedByUserName(){
+        String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+        return new ResponseEntity<>(boardService.findBoardByUsername(userName),HttpStatus.OK);
     }
 }
