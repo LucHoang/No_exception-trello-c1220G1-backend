@@ -39,7 +39,7 @@ public class ListController {
     }
 
 
-    @PostMapping("createList")
+    @PostMapping("/createList")
     public ResponseEntity<?> createList(@Valid @RequestBody ListTrello list, HttpServletRequest request, BindingResult bindingResult){
         if (bindingResult.hasFieldErrors()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
