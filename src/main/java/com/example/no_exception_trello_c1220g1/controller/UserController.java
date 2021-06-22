@@ -14,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -36,7 +37,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<User> editUserPassword(@Valid @RequestBody UserUpdateDto userUpdateDto, @PathVariable Long id, BindingResult bindingResult){
+    public ResponseEntity<User> editUserPassword(@Validated @RequestBody UserUpdateDto userUpdateDto, @PathVariable Long id, BindingResult bindingResult){
         if (bindingResult.hasFieldErrors()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
