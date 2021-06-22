@@ -16,4 +16,5 @@ public interface IListService extends IGeneralService<ListTrello> {
     List<ListResponse> findAllListByBoardId(Long id);
 
     boolean checkRole (UserPrinciple userPrinciple, ListTrello listTrello);
+    Long findBoardIdByListTrelloId(Long id);
 }

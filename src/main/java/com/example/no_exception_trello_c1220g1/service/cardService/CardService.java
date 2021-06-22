@@ -30,7 +30,7 @@ public class CardService implements ICardService {
 
     @Override
     public Optional<Card> findById(Long id) {
-        return Optional.empty();
+        return cardRepository.findById(id);
     }
 
     @Override
@@ -65,11 +65,14 @@ public class CardService implements ICardService {
 
     @Override
     public Card editCard(CardDto cardDto) {
-        Card card = cardRepository.findById(cardDto.getId()).get();
-        card.setTitle(cardDto.getTitle());
-        card.setListTrello(cardRepository.findById(cardDto.getId()).get().getListTrello());
+        Optional<Card> card = cardRepository.findById(cardDto.getId());
+        if(card.isPresent()){
+            card.get().setTitle(cardDto.getTitle());
+            card.get().setListTrello(cardRepository.findById(cardDto.getId()).get().getListTrello());
+        }
 
-        return cardRepository.save(card);
+
+        return cardRepository.save(card.get());
     }
 
     @Override

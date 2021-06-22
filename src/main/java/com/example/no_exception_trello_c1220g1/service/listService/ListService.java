@@ -116,5 +116,10 @@ public class ListService implements IListService{
         }
         return true;
     }
+
+    @Override
+    public Long findBoardIdByListTrelloId(Long id) {
+        return listRepository.findBoardIdByListTrelloId(id);
+    }
 }
 
