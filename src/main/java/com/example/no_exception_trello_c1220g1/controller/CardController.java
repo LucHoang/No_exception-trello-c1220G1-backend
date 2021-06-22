@@ -37,10 +37,7 @@ public class CardController {
     private UserService userService;
     @Autowired
     private IBoardTagAppUserService boardTagAppUserService;
-//    @GetMapping("/list/{id}")
-//    public ResponseEntity<List<Card>> findCardsByListId(@PathVariable Long id){
-//        return new ResponseEntity<>(cardService.findCardsByListId(id), HttpStatus.OK);
-//    }
+
     @PutMapping("changePosition")
     public ResponseEntity<?> changePositionCard(@RequestBody List<CardCreateDto> cards){
         UserPrinciple userPrinciple = (UserPrinciple) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

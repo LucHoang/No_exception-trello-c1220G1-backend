@@ -81,9 +81,24 @@ public class BoardController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Board> findBoardById(@PathVariable Long id) {
+        String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userService.findByUsername(userName);
+
         Optional<Board> board = boardService.findById(id);
         if (!board.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        if (board.get().getType().equalsIgnoreCase("TYPE_PRIVATE")) {
+            if (board.get().getGroupTrello() == null) {
+                if (!board.get().getUser().getUserName().equalsIgnoreCase(userName)) {
+                    return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+                }
+            } else {
+                GroupTagUser groupTagUser = groupTagUserService.findByGroupIdAndUserId(board.get().getGroupTrello().getId(), user.getId());
+                if (groupTagUser == null) {
+                    return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+                }
+            }
         }
         return new ResponseEntity<>(board.get(), HttpStatus.OK);
     }
