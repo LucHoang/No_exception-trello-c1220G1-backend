@@ -1,5 +1,6 @@
 package com.example.no_exception_trello_c1220g1.model.entity;
 
+import com.example.no_exception_trello_c1220g1.model.dto.CardUserDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -21,5 +22,4 @@ public class Comment extends Auditable<String>{
     private User appUser;
     @ManyToOne
     private Card card;
-    private Date date_create;
 }

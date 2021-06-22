@@ -1,23 +1,29 @@
 package com.example.no_exception_trello_c1220g1.controller;
 
+import com.example.no_exception_trello_c1220g1.model.dto.CardCreateDto;
 import com.example.no_exception_trello_c1220g1.model.dto.CardDto;
-import com.example.no_exception_trello_c1220g1.model.entity.BoardTagAppUser;
-import com.example.no_exception_trello_c1220g1.model.entity.Card;
-import com.example.no_exception_trello_c1220g1.model.entity.User;
+import com.example.no_exception_trello_c1220g1.model.dto.CardEditDto;
+import com.example.no_exception_trello_c1220g1.model.dto.UserPrinciple;
+import com.example.no_exception_trello_c1220g1.model.entity.*;
 import com.example.no_exception_trello_c1220g1.service.board.boardTagAppUser.IBoardTagAppUserService;
 import com.example.no_exception_trello_c1220g1.service.cardService.ICardService;
+
 import com.example.no_exception_trello_c1220g1.service.listService.IListService;
-import com.example.no_exception_trello_c1220g1.service.token.JwtService;
 import com.example.no_exception_trello_c1220g1.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
-import java.security.Principal;
+
 import java.util.List;
+import java.util.Optional;
+import java.util.OptionalInt;
 
 @RestController
 @CrossOrigin("*")
@@ -28,43 +34,48 @@ public class CardController {
     @Autowired
     private IListService listService;
     @Autowired
-    private JwtService jwtService;
-    @Autowired
     private UserService userService;
     @Autowired
     private IBoardTagAppUserService boardTagAppUserService;
-//    @GetMapping("/list/{id}")
-//    public ResponseEntity<List<Card>> findCardsByListId(@PathVariable Long id){
-//        return new ResponseEntity<>(cardService.findCardsByListId(id), HttpStatus.OK);
-//    }
-    @PutMapping("changePosition")
-    public ResponseEntity<?> changePositionCard(@RequestBody List<Card> cards){
-        String userName = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userService.findByUsername(userName);
-        BoardTagAppUser boardTagUserCheck = boardTagAppUserService.findByBoardIdAndUserId(cards.get(0).getListTrello().getBoard().getId(), user.getId());
 
-        if (boardTagUserCheck.getRoleUser().equals("ROLE_VIEW")) {
+    @PutMapping("changePosition")
+    public ResponseEntity<?> changePositionCard(@RequestBody List<CardCreateDto> cards){
+        UserPrinciple userPrinciple = (UserPrinciple) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        Optional<ListTrello> listTrello = listService.findById(cards.get(0).getListTrelloId());
+        if (!listTrello.isPresent()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        if (!cardService.checkRole(userPrinciple, listTrello)) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
-        for (Card card:cards) {
+        for (CardCreateDto cardCreateDto: cards) {
+            Card card = Card.builder()
+                    .title(cardCreateDto.getTitle())
+                    .content(cardCreateDto.getContent())
+                    .position(cardCreateDto.getPosition())
+                    .listTrello(listTrello.get())
+                    .build();
             cardService.save(card);
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }
-    @PutMapping("edit/{boardId}/{id}")
-    public ResponseEntity<?> editCard(@PathVariable Long boardId, @PathVariable Long id, @RequestBody CardDto cardDto, Principal principal){
-        User user = userService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-        BoardTagAppUser boardTagAppUser = boardTagAppUserService.findByBoardIdAndUserId(boardId, user.getId());
-        if(boardTagAppUser== null){
-            return new ResponseEntity<>("user invalid in group",HttpStatus.NOT_FOUND);
-        }
-        if(boardTagAppUser.getRoleUser().equals("ROLE_VIEW")){
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
+//    @PutMapping("edit/{boardId}/")
+//    public ResponseEntity<?> editCard(@PathVariable Long boardId, @RequestBody CardDto cardDto){
+//        User user = userService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+//        BoardTagAppUser boardTagAppUser = boardTagAppUserService.findByBoardIdAndUserId(boardId, user.getId());
+//        if(boardTagAppUser== null){
+//            return new ResponseEntity<>("user invalid in group",HttpStatus.NOT_FOUND);
+//        }
+//        if(boardTagAppUser.getRoleUser().equals("ROLE_VIEW")){
+//            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+//        }
+//
+//        return new ResponseEntity<>(cardService.editCard(cardDto),HttpStatus.OK);
+//    }
 
-        return new ResponseEntity<>(cardService.editCard(cardDto),HttpStatus.OK);
-    }
     @GetMapping("/{id}")
     public ResponseEntity<Card> findCardById(@PathVariable Long id){
         if (!cardService.findById(id).isPresent()){
@@ -72,36 +83,60 @@ public class CardController {
         }
         return new ResponseEntity<>(cardService.findById(id).get(), HttpStatus.OK);
     }
-    @PostMapping("create")
-    public ResponseEntity<?> createCard(@RequestBody Card card, HttpServletRequest request){
-        String userName = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userService.findByUsername(userName);
-        BoardTagAppUser boardTagUserCheck = boardTagAppUserService.findByBoardIdAndUserId(card.getListTrello().getBoard().getId(), user.getId());
+    @PostMapping()
+    public ResponseEntity<?> createCard(@RequestBody CardCreateDto cardCreateDto){
+        UserPrinciple userPrinciple = (UserPrinciple) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        if (boardTagUserCheck.getRoleUser().equals("ROLE_VIEW")) {
+        Optional<ListTrello> listTrello = listService.findById(cardCreateDto.getListTrelloId());
+        if (!listTrello.isPresent()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        if (!cardService.checkRole(userPrinciple, listTrello)) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
-        int position = cardService.findCardsByListId(card.getListTrello().getId()).size();
-        card.setPosition(position);
-        Card newCard = cardService.save(card);
+        int position = cardService.findCardsByListId(listTrello.get().getId()).size();
+        Card card = Card.builder()
+                .title(cardCreateDto.getTitle())
+                .content(cardCreateDto.getContent())
+                .position(position)
+                .listTrello(listTrello.get())
+                .build();
 
-
-        return new ResponseEntity<>(newCard, HttpStatus.OK);
+        return new ResponseEntity<>(cardService.save(card), HttpStatus.OK);
     }
-//
-//    @GetMapping("/search/{id}")
-//        public ResponseEntity<?> searchCardByUser (@PathVariable Long id,@RequestParam Long userId){
-//        return new ResponseEntity<>(cardService.findCardsByBroadIdAndUserId(id, userId),HttpStatus.OK);
-//    }
-//
-//    @GetMapping("")
-//    public ResponseEntity<?> showAll(){
-//        return new ResponseEntity<>(cardService.findAllCard(),HttpStatus.OK);
-//    }
-//    @GetMapping("label/{id1}")
-//    public ResponseEntity<?> findCardByLabel(@PathVariable Long id1, @RequestParam Long labelId){
-//        return new ResponseEntity<>(cardService.findCardByLabel(labelId,id1 ),HttpStatus.OK);
+
+
+//    @GetMapping("/search-by-label/{id}")
+//        public ResponseEntity<?> searchCardByLabelsId (@PathVariable Long id){
+//        if (cardService.findCardByLabel(id).isEmpty()){
+//            return new ResponseEntity<>("not found",HttpStatus.NOT_FOUND);
+//        }
+//        return new ResponseEntity<>(cardService.findCardByLabel(id),HttpStatus.OK);
 //    }
 
+    @GetMapping("/search/{id}")
+    public ResponseEntity<?> searchCard(@PathVariable Long id, @RequestParam("q") String textSearch, @PageableDefault(value = 10) Pageable pageable) {
+
+        List<Card> cards = cardService.findAllByTitleOrContentContaining(textSearch, id);
+
+        return new ResponseEntity<>(cards, HttpStatus.OK);
+    }
+
+    @PutMapping("edit/")
+    public ResponseEntity<?> updateCard(@RequestBody CardEditDto cardEditDto){
+        UserPrinciple userPrinciple = (UserPrinciple) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        Optional<ListTrello> listTrello = listService.findById(cardEditDto.getListTrelloId());
+        if (!listTrello.isPresent()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        if (!cardService.checkRole(userPrinciple, listTrello)) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+
+        return new ResponseEntity<>(cardService.updateCard(cardEditDto, listTrello.get()),HttpStatus.OK);
+    }
 }

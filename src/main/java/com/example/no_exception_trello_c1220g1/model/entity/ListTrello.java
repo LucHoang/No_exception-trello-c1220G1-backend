@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.util.List;
 
 @EqualsAndHashCode(callSuper=true)
 @Entity
@@ -22,5 +23,6 @@ public class ListTrello extends Auditable<String>{
     private int position;
     @ManyToOne
     private Board board;
+//    private List<Card> cards;
 
 }

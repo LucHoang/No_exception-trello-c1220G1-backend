@@ -2,6 +2,7 @@ package com.example.no_exception_trello_c1220g1.service.listService;
 
 
 import com.example.no_exception_trello_c1220g1.model.dto.ListResponse;
+import com.example.no_exception_trello_c1220g1.model.dto.UserPrinciple;
 import com.example.no_exception_trello_c1220g1.model.entity.ListTrello;
 import com.example.no_exception_trello_c1220g1.service.IGeneralService;
 
@@ -13,4 +14,6 @@ public interface IListService extends IGeneralService<ListTrello> {
     java.util.List<ListTrello> findListByBoardId(Long id);
     ListTrello editTitleList(ListTrello list, Long id);
     List<ListResponse> findAllListByBoardId(Long id);
+
+    boolean checkRole (UserPrinciple userPrinciple, ListTrello listTrello);
 }

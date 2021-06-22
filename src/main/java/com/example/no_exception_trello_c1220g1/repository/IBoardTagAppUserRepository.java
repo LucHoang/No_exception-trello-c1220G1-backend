@@ -14,4 +14,5 @@ public interface IBoardTagAppUserRepository extends JpaRepository<BoardTagAppUse
     List<BoardTagAppUser> findBoardTagAppUserByUserIdAndTypeBoardAndRoleUser(Long id);
 
     List<BoardTagAppUser> findAllByAppUser_IdAndBoard_Type (Long UserId, String type);
+    List<BoardTagAppUser> findAllByAppUser_Id (Long UserId);
 }

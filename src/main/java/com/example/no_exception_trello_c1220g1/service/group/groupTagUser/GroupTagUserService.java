@@ -37,7 +37,7 @@ public class GroupTagUserService implements IGroupTagUserService{
     }
 
     @Override
-    public Iterable<GroupTagUser> findAllByUserId(Long id) {
+    public List<GroupTagUser> findAllByUserId(Long id) {
         return groupTagUserRepository.findAllByUserId(id);
     }
 
