@@ -15,8 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +34,14 @@ public class BoardTagAppUserController {
     private IBoardService boardService;
     @Autowired
     EmailService emailService;
+
+    @GetMapping("/{boardId}/users")
+    public ResponseEntity<?> getTagUser(@PathVariable("boardId") long id){
+        if (!boardService.findById(id).isPresent()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(boardTagAppUserService.getListTagUser(id), HttpStatus.OK);
+    }
 
     @PostMapping("add")
     public ResponseEntity<?> add(@Valid @RequestBody BoardTagUserDto boardTagUserDto, BindingResult bindingResult){

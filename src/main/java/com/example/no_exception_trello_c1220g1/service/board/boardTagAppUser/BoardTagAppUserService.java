@@ -1,8 +1,8 @@
 package com.example.no_exception_trello_c1220g1.service.board.boardTagAppUser;
 
+import com.example.no_exception_trello_c1220g1.model.dto.UserResponse;
 import com.example.no_exception_trello_c1220g1.model.entity.BoardTagAppUser;
 import com.example.no_exception_trello_c1220g1.repository.IBoardTagAppUserRepository;
-
 import com.example.no_exception_trello_c1220g1.model.entity.User;
 import com.example.no_exception_trello_c1220g1.service.user.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class BoardTagAppUserService implements IBoardTagAppUserService{
+public class BoardTagAppUserService implements IBoardTagAppUserService {
     @Autowired
     IBoardTagAppUserRepository boardTagAppUserRepository;
 
@@ -45,38 +45,41 @@ public class BoardTagAppUserService implements IBoardTagAppUserService{
     private IUserService userService;
 
     @Override
-    public List<User> getListTagUser(Long board_id) {
-        List<User> listTagUser = new ArrayList<>();
-        List<User> allUsers = userService.findAll();
-        List<User> listUsersByBoard = userService.findUserAndTagUserByBoard(board_id);
-        for (User user: allUsers ) {
-            if (!checkListContainItem(user, listUsersByBoard)) listTagUser.add(user);
-        }
-        return listTagUser;
+    public List<UserResponse> getListTagUser(long board_id) {
+        List<Object> resultSet = boardTagAppUserRepository.findAllByBoardId(board_id);
 
+        List<UserResponse> response = new ArrayList<>();
+        for (Object o :resultSet) {
+            UserResponse user = new UserResponse();
+            user.setId(Long.parseLong(((Object[])o)[0].toString()));
+            user.setUsername(((Object[])o)[1].toString());
+            user.setEmail(((Object[])o)[2].toString());
+            user.setAvatar(((Object[])o)[3].toString());
+            response.add(user);
+        }
+        return response;
     }
 
     @Override
     public List<BoardTagAppUser> findBoardByUserIdAndTypeBoardAndRoleUser(Long id) {
-
         return boardTagAppUserRepository.findBoardTagAppUserByUserIdAndTypeBoardAndRoleUser(id);
     }
 
 
-    public boolean checkListContainItem(User appUser, List<User> appUserList){
-        for (User a: appUserList) {
-            if (a.getId()==appUser.getId()) return true;
+    public boolean checkListContainItem(User appUser, List<User> appUserList) {
+        for (User a : appUserList) {
+            if (a.getId() == appUser.getId()) return true;
         }
         return false;
     }
 
     @Override
-    public List<BoardTagAppUser> findBoardByUserIdAndBoardType (Long id, String type) {
+    public List<BoardTagAppUser> findBoardByUserIdAndBoardType(Long id, String type) {
         return boardTagAppUserRepository.findAllByAppUser_IdAndBoard_Type(id, type);
     }
 
     @Override
-    public List<BoardTagAppUser> findAllByUserId (Long userId) {
+    public List<BoardTagAppUser> findAllByUserId(Long userId) {
         return boardTagAppUserRepository.findAllByAppUser_Id(userId);
     }
 //    @Autowired

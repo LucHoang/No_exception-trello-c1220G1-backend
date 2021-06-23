@@ -2,11 +2,11 @@ package com.example.no_exception_trello_c1220g1.service.board;
 
 import com.example.no_exception_trello_c1220g1.model.dto.BoardDto;
 import com.example.no_exception_trello_c1220g1.model.entity.Board;
+import com.example.no_exception_trello_c1220g1.model.entity.User;
 import com.example.no_exception_trello_c1220g1.repository.IBoardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.nio.file.attribute.UserPrincipal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -60,6 +60,7 @@ public class BoardService implements IBoardService{
             boardDtos.add(boardDto);
         }
         return boardDtos ;
-
     }
+
+
 }

@@ -1,7 +1,7 @@
 package com.example.no_exception_trello_c1220g1.controller;
 
 import com.example.no_exception_trello_c1220g1.model.dto.BoardDto;
-import com.example.no_exception_trello_c1220g1.model.dto.UserPrinciple;
+import com.example.no_exception_trello_c1220g1.model.dto.UserResponse;
 import com.example.no_exception_trello_c1220g1.model.entity.Board;
 import com.example.no_exception_trello_c1220g1.model.entity.User;
 import com.example.no_exception_trello_c1220g1.service.board.IBoardService;
@@ -13,10 +13,7 @@ import com.example.no_exception_trello_c1220g1.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,6 +22,7 @@ import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @CrossOrigin("*")
 @RestController
@@ -41,16 +39,17 @@ public class BoardController {
     private UserService userService;
 
 
-
     @GetMapping("")
     public ResponseEntity<List<Board>> showAll() {
         return new ResponseEntity<>(boardService.findAll(), HttpStatus.OK);
     }
+
     @GetMapping("list-board-in-group/{id}")
-    public ResponseEntity<Iterable<Board>> showListBoardInGroup(@PathVariable Long id){
-        return new ResponseEntity<>(boardService.findBoardByGroupId(id),HttpStatus.OK);
+    public ResponseEntity<Iterable<Board>> showListBoardInGroup(@PathVariable Long id) {
+        return new ResponseEntity<>(boardService.findBoardByGroupId(id), HttpStatus.OK);
     }
-//
+
+    //
     @PostMapping()
     public ResponseEntity<Board> create(@Valid @RequestBody Board board, BindingResult bindingResult, HttpServletRequest request) {
         if (bindingResult.hasFieldErrors()) {
@@ -77,6 +76,35 @@ public class BoardController {
 
         boardTagAppUserService.save(boardTagAppUser);
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PostMapping("/{boardId}/tagUser")
+    public ResponseEntity<?> tagUSer(@PathVariable("boardId") long boardId, ArrayList<Long> listId) {
+        Optional<Board> board = boardService.findById(boardId);
+        if (board.isPresent()) {
+            List<UserResponse> users = listId.stream().map((userId) -> {
+                Optional<User> user = userService.findById(userId);
+                if (user.isPresent()) {
+                    BoardTagAppUser tagUser = boardTagAppUserService.findByBoardIdAndUserId(boardId, userId);
+                    if (tagUser == null) {
+                        BoardTagAppUser tag = new BoardTagAppUser();
+                        tag.setBoard(board.get());
+                        tag.setAppUser(user.get());
+                        tag.setRoleUser("ROLE_VIEW");
+                        boardTagAppUserService.save(tag);
+                        UserResponse userResponse = new UserResponse();
+                        userResponse.setId(user.get().getId());
+                        userResponse.setUsername(user.get().getUserName());
+                        userResponse.setAvatar(user.get().getAvatar());
+                        userResponse.setEmail(user.get().getEmail());
+                        return userResponse;
+                    }
+                }
+                return null;
+            }).collect(Collectors.toList());
+            return new ResponseEntity(users, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @GetMapping("/{id}")
@@ -118,7 +146,7 @@ public class BoardController {
 
         List<BoardTagAppUser> boardTagAppUsers = boardTagAppUserService.findBoardByUserIdAndBoardType(user.getId(), "TYPE_GROUP");
         List<Board> boards = new ArrayList<>();
-        for (BoardTagAppUser boardTagAppUser: boardTagAppUsers) {
+        for (BoardTagAppUser boardTagAppUser : boardTagAppUsers) {
             boards.add(boardTagAppUser.getBoard());
         }
 
@@ -132,15 +160,16 @@ public class BoardController {
 
         List<BoardTagAppUser> boardTagAppUsers = boardTagAppUserService.findBoardByUserIdAndBoardType(user.getId(), "TYPE_PUBLIC");
         List<Board> boards = new ArrayList<>();
-        for (BoardTagAppUser boardTagAppUser: boardTagAppUsers) {
+        for (BoardTagAppUser boardTagAppUser : boardTagAppUsers) {
             boards.add(boardTagAppUser.getBoard());
         }
 
         return new ResponseEntity<>(boards, HttpStatus.OK);
     }
+
     @GetMapping("showAllBoardCreateByUserName")
-    public ResponseEntity<List<BoardDto>> showAllBoardCreatedByUserName(){
+    public ResponseEntity<List<BoardDto>> showAllBoardCreatedByUserName() {
         String userName = SecurityContextHolder.getContext().getAuthentication().getName();
-        return new ResponseEntity<>(boardService.findBoardByUsername(userName),HttpStatus.OK);
+        return new ResponseEntity<>(boardService.findBoardByUsername(userName), HttpStatus.OK);
     }
 }

@@ -2,6 +2,7 @@ package com.example.no_exception_trello_c1220g1.controller;
 
 import com.example.no_exception_trello_c1220g1.model.dto.RoleUserGroupDto;
 import com.example.no_exception_trello_c1220g1.model.dto.UserPrinciple;
+import com.example.no_exception_trello_c1220g1.model.dto.UserResponse;
 import com.example.no_exception_trello_c1220g1.model.entity.GroupTagUser;
 import com.example.no_exception_trello_c1220g1.model.entity.GroupTrello;
 import com.example.no_exception_trello_c1220g1.model.entity.User;
@@ -18,7 +19,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @CrossOrigin("*")
 @RestController
@@ -42,25 +45,27 @@ public class GroupController {
 //        String userName = jwtService.getUserNameFromJwtToken(authHeader.replace("Bearer ", ""));
         String userName = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userService.findByUsername(userName);
+        GroupTrello group = groupService.save(groupTrello);
 
         GroupTagUser groupTagUser = GroupTagUser.builder()
                 .user(user)
-                .groupTrello(groupService.save(groupTrello))
+                .groupTrello(group)
                 .roleUser("ROLE_ADMIN")
                 .build();
         groupTagUserService.save(groupTagUser);
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(group, HttpStatus.OK);
     }
+
     @PutMapping("/edit")
-    public ResponseEntity<?> editGroup(@RequestBody GroupTrello groupTrello,BindingResult bindingResult){
-        if(bindingResult.hasFieldErrors()){
+    public ResponseEntity<?> editGroup(@RequestBody GroupTrello groupTrello, BindingResult bindingResult) {
+        if (bindingResult.hasFieldErrors()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         String userName = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userService.findByUsername(userName);
-        GroupTagUser groupTagUser = groupTagUserService.findByGroupIdAndUserId(user.getId(),groupTrello.getId());
-        if(!groupTagUser.getRoleUser().equals("ROLE_ADMIN")){
+        GroupTagUser groupTagUser = groupTagUserService.findByGroupIdAndUserId(user.getId(), groupTrello.getId());
+        if (!groupTagUser.getRoleUser().equals("ROLE_ADMIN")) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         groupService.save(groupTrello);
@@ -73,7 +78,7 @@ public class GroupController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         UserPrinciple userPrinciple = (UserPrinciple) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        GroupTagUser groupTagUserCheck = (GroupTagUser) userPrinciple.getAllRole().get(roleUserGroupDto.getGroupId()+"gtu");
+        GroupTagUser groupTagUserCheck = (GroupTagUser) userPrinciple.getAllRole().get(roleUserGroupDto.getGroupId() + "gtu");
 
         if (groupTagUserCheck == null || !groupTagUserCheck.getRoleUser().equals("ROLE_ADMIN")) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
@@ -85,18 +90,28 @@ public class GroupController {
         groupTagUser.setRoleUser(roleUserGroupDto.getRoleUser());
         return new ResponseEntity<>(groupTagUserService.save(groupTagUser), HttpStatus.OK);
     }
+
     @PutMapping("/edit-type-group/{groupid}")
-    public ResponseEntity<?> editTypeGroup(@RequestBody String type,@PathVariable Long groupid){
+    public ResponseEntity<?> editTypeGroup(@RequestBody String type, @PathVariable Long groupid) {
         UserPrinciple userPrinciple = (UserPrinciple) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        GroupTagUser groupTagUser = (GroupTagUser) userPrinciple.getAllRole().get(groupid+"gtu");
-        if (groupTagUser == null || !groupTagUser.getRoleUser().equals("ROLE_ADMIN")){
+        GroupTagUser groupTagUser = (GroupTagUser) userPrinciple.getAllRole().get(groupid + "gtu");
+        if (groupTagUser == null || !groupTagUser.getRoleUser().equals("ROLE_ADMIN")) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         Optional<GroupTrello> groupTrello = groupService.findById(groupid);
-        if(!groupTrello.isPresent()){
+        if (!groupTrello.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         groupTrello.get().setType(type);
-        return new ResponseEntity<>(groupService.save(groupTrello.get()),HttpStatus.OK);
+        return new ResponseEntity<>(groupService.save(groupTrello.get()), HttpStatus.OK);
+    }
+
+    @GetMapping("{boardId}/users")
+    public ResponseEntity<?> getUserInGroup(@PathVariable("boardId") long boardId) {
+        UserPrinciple userPrinciple = (UserPrinciple) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        long id = userPrinciple.getId();
+        List<UserResponse> users = groupService.findUsersInGroup(boardId).stream()
+                .filter((user) -> user.getId() != id).collect(Collectors.toList());
+        return new ResponseEntity<>(users, HttpStatus.OK);
     }
 }

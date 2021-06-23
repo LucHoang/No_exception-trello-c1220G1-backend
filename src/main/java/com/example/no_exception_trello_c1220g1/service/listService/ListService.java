@@ -100,6 +100,11 @@ public class ListService implements IListService{
     }
 
     @Override
+    public Optional<ListTrello> findListByCardId(long id) {
+        return listRepository.findListByCardId(id);
+    }
+
+    @Override
     public boolean checkRole(UserPrinciple userPrinciple, ListTrello listTrello) {
         BoardTagAppUser boardTagUserCheck = (BoardTagAppUser) userPrinciple.getAllRole().get(listTrello.getBoard().getId()+"btu");
         GroupTagUser groupTagUserCheck;

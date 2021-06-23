@@ -27,8 +27,8 @@ public class CardTagUserService implements ICardTagUserService{
             UserResponse user = new UserResponse();
             user.setId(Long.parseLong(((Object[])o)[0].toString()));
             user.setAvatar(((Object[])o)[3].toString());
-            user.setUsername(((Object[])o)[2].toString());
-            user.setEmail(((Object[])o)[1].toString());
+            user.setUsername(((Object[])o)[1].toString());
+            user.setEmail(((Object[])o)[2].toString());
             users.add(user);
         }
         return users;

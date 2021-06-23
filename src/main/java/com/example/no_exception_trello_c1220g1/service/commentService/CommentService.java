@@ -5,7 +5,6 @@ import com.example.no_exception_trello_c1220g1.model.entity.Comment;
 import com.example.no_exception_trello_c1220g1.repository.ICommentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
