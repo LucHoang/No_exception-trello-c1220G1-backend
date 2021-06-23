@@ -67,7 +67,7 @@ public class GroupTagUserController {
                 .roleUser(groupTagUserDto.getRoleUser())
                 .build();
 
-        emailService.sendEmail(groupTagUserDto.getEmail());
+//        emailService.sendEmail(groupTagUserDto.getEmail());
 
          return new ResponseEntity<>(groupTagUserService.save(groupTagUser), HttpStatus.OK);
      }
