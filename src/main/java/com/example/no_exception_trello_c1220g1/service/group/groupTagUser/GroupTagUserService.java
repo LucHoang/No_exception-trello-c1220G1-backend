@@ -51,5 +51,9 @@ public class GroupTagUserService implements IGroupTagUserService{
         groupTagUserRepository.deleteByUserId(userId,groupId);
     }
 
+    @Override
+    public List<GroupTagUser> findAllByGroupTrelloId (Long id) {
+        return groupTagUserRepository.findAllByGroupTrello_Id(id);
+    }
 
 }

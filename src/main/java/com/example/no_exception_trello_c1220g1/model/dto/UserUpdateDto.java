@@ -13,21 +13,21 @@ import javax.validation.constraints.Size;
 public class UserUpdateDto {
     private Long id;
     @NotBlank
-    @Pattern(regexp="^[a-zA-Z0-9][a-zA-Z0-9]{3,30}")
+//    @Pattern(regexp="^[a-zA-Z0-9][a-zA-Z0-9]{3,30}")
     private String userName;
     //    private MultipartFile avatarMul;
     private String avatar;
-    @Email
+//    @Email
     @NotBlank
-    @Pattern(regexp="^[a-z][a-z0-9_\\.]{5,32}@[a-z0-9]{2,}(\\.[a-z0-9]{2,4}){1,2}$")
+//    @Pattern(regexp="^[a-z][a-z0-9_\\.]{5,32}@[a-z0-9]{2,}(\\.[a-z0-9]{2,4}){1,2}$")
     private String email;
-    @Size(min = 6, max = 32)
+//    @Size(min = 6, max = 100)
     private String passWord;
     //    private String newPassWord;
     @Pattern(regexp="(84|0[3|5|7|8|9])+([0-9]{8})\\b")
     private String phone;
-    @Size(min = 6, max = 32)
+//    @Size(min = 6, max = 32)
     private String oldPassWord;
-    @Size(min = 6, max = 32)
+//    @Size(min = 6, max = 32)
     private String newPassWord;
 }

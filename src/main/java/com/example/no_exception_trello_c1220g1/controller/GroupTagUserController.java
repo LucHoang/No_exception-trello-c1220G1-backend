@@ -1,6 +1,7 @@
 package com.example.no_exception_trello_c1220g1.controller;
 
 import com.example.no_exception_trello_c1220g1.model.dto.GroupTagUserDto;
+import com.example.no_exception_trello_c1220g1.model.dto.UserPrinciple;
 import com.example.no_exception_trello_c1220g1.model.entity.GroupTagUser;
 import com.example.no_exception_trello_c1220g1.model.entity.GroupTrello;
 import com.example.no_exception_trello_c1220g1.model.entity.User;
@@ -17,6 +18,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @CrossOrigin("*")
@@ -80,7 +83,7 @@ public class GroupTagUserController {
     public ResponseEntity<Iterable<GroupTagUser>> findAllByUserIdAndType(@PathVariable Long id,@PathVariable String type){
         return new ResponseEntity<>(groupTagUserService.findAllByUserIdAndType(id,type),HttpStatus.OK);
     }
-    @DeleteMapping("/delete-user/{groupId}/{userId}")
+    @DeleteMapping("/deleteUser/{groupId}/{userId}")
     public ResponseEntity<?> deleteUser(@PathVariable Long groupId,@PathVariable Long userId){
         GroupTagUser groupTagUser = groupTagUserService.findByGroupIdAndUserId(groupId,userService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).getId());
         if(!groupTagUser.getRoleUser().equals("ROLE_ADMIN")){
@@ -94,5 +97,16 @@ public class GroupTagUserController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @GetMapping("/listUser/{id}")
+    public ResponseEntity<List<GroupTagUser>> findAllByGroupId(@PathVariable Long id, HttpServletRequest request){
+        List<GroupTagUser> groupTagUsers = groupTagUserService.findAllByGroupTrelloId(id);
+        UserPrinciple userPrinciple = (UserPrinciple) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        groupTagUsers.removeIf(groupTagUser -> groupTagUser.getUser().getUserName().equalsIgnoreCase(userPrinciple.getUsername()));
+//        List<User> users = null;
+//        for (GroupTagUser groupTagUser: groupTagUsers) {
+//            users.add(groupTagUser.getUser());
+//        }
+        return new ResponseEntity<>(groupTagUsers,HttpStatus.OK);
+    }
 
 }

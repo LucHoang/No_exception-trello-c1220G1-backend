@@ -11,4 +11,5 @@ public interface IGroupTagUserService extends IGeneralService<GroupTagUser> {
     Iterable<GroupTagUser> findAllByUserIdAndType(Long id, String type);
     void deleteUserFromGroup(Long userId,Long groupId);
 
+    List<GroupTagUser> findAllByGroupTrelloId(Long id);
 }

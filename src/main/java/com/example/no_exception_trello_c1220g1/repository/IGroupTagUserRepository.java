@@ -21,6 +21,7 @@ public interface IGroupTagUserRepository extends JpaRepository<GroupTagUser,Long
     @Transactional
     @Query(value = "DELETE FROM group_tag_user WHERE user_id=?1 and group_trello_id=?2",nativeQuery = true)
     void deleteByUserId(Long id,Long groupID);
+    List<GroupTagUser> findAllByGroupTrello_Id (Long id);
 
 
 }

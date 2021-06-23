@@ -12,5 +12,6 @@ import java.util.List;
 public interface ICardTagUserRepository extends JpaRepository<CardTagUser,Long> {
     @Query(value = "call getTagUserByCardId(:cardId);", nativeQuery = true)
     List<Object> findAllByCardId(@Param("cardId") Long cardId);
+    
 
 }
