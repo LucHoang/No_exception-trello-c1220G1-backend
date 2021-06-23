@@ -38,15 +38,15 @@ public class GroupTagUserController {
     @PostMapping("add")
     public ResponseEntity<?> add(@Valid @RequestBody GroupTagUserDto groupTagUserDto, BindingResult bindingResult){
         if (bindingResult.hasFieldErrors()) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("exist", HttpStatus.BAD_REQUEST);
         }
 
         User userMail = userService.findByEmail(groupTagUserDto.getEmail());
         if (userMail == null) {
-            return new ResponseEntity<>("Email does not exist!", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("exist", HttpStatus.NOT_FOUND);
         }
         if (groupTagUserService.findByGroupIdAndUserId(groupTagUserDto.getGroupId(), userMail.getId()) != null) {
-            return new ResponseEntity<>("User is already a member", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("already", HttpStatus.BAD_REQUEST);
         }
 
         String userName = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -100,8 +100,8 @@ public class GroupTagUserController {
     @GetMapping("/listUser/{id}")
     public ResponseEntity<List<GroupTagUser>> findAllByGroupId(@PathVariable Long id, HttpServletRequest request){
         List<GroupTagUser> groupTagUsers = groupTagUserService.findAllByGroupTrelloId(id);
-        UserPrinciple userPrinciple = (UserPrinciple) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        groupTagUsers.removeIf(groupTagUser -> groupTagUser.getUser().getUserName().equalsIgnoreCase(userPrinciple.getUsername()));
+//        UserPrinciple userPrinciple = (UserPrinciple) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//        groupTagUsers.removeIf(groupTagUser -> groupTagUser.getUser().getUserName().equalsIgnoreCase(userPrinciple.getUsername()));
 //        List<User> users = null;
 //        for (GroupTagUser groupTagUser: groupTagUsers) {
 //            users.add(groupTagUser.getUser());
